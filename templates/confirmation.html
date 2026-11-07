@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Booking Confirmed | CineBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
+{% include 'customer_navbar.html' %}
+
+<main class="phase4-wrap">
+    <section class="phase4-ticket">
+        <h1>Booking Confirmed!</h1>
+        <p>Your CineBook booking has been saved.</p>
+
+        <p class="phase4-muted">BOOKING ID</p>
+        <div class="phase4-ticket-id">#{{ booking.booking_id }}</div>
+
+        <h2>{{ booking.title }}</h2>
+        <p>{{ booking.theatre_name }} · {{ booking.screen_name }}</p>
+        <p>{{ booking.show_date }} · {{ booking.show_time }}</p>
+
+        <hr>
+
+        <h3>Seats</h3>
+        <p>
+            {% for seat in seats %}
+                {{ seat.row_label }}{{ seat.seat_number }}
+                {% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+
+        <p>Booking status: <strong>{{ booking.status }}</strong></p>
+        <p>Payment method: <strong>{{ booking.payment_method or 'Not recorded' }}</strong></p>
+        <p>Payment status: <strong>{{ booking.payment_status or 'Unknown' }}</strong></p>
+        <h2>Total: ₹{{ '%.2f'|format(booking.total_amount|float) }}</h2>
+
+        {% if booking.payment_status == 'Pending' %}
+            <p>Payment is pending. Please pay at the counter.</p>
+        {% endif %}
+
+        <a class="phase4-button" href="{{ url_for('my_bookings') }}">
+            My Bookings
+        </a>
+        <a class="phase4-button secondary"
+           href="{{ url_for('browse_movies') }}">
+            Book Another Movie
+        </a>
+    </section>
+</main>
+</body>
+</html>

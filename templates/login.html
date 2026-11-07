@@ -1,0 +1,844 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | CineBook</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CINEBOOK LOGIN PAGE
+        ========================================= */
+
+        .cinebook-login {
+            --login-bg: #070B1A;
+            --login-panel: #10162D;
+            --login-border: rgba(139, 92, 246, .23);
+            --login-text: #F1F5FF;
+            --login-muted: #929FBE;
+            --login-cyan: #22D3EE;
+            --login-blue: #3B82F6;
+            --login-purple: #8B5CF6;
+
+            min-height: 100vh;
+            margin: 0;
+            padding: 35px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: var(--login-text);
+            font-family: 'Inter', sans-serif;
+
+            background:
+                radial-gradient(
+                    ellipse at 10% 10%,
+                    rgba(59, 130, 246, .13),
+                    transparent 38%
+                ),
+                radial-gradient(
+                    ellipse at 95% 85%,
+                    rgba(139, 92, 246, .13),
+                    transparent 35%
+                ),
+                var(--login-bg);
+        }
+
+        .cinebook-login *,
+        .cinebook-login *::before,
+        .cinebook-login *::after {
+            box-sizing: border-box;
+        }
+
+        .cinebook-login a {
+            text-decoration: none;
+        }
+
+        .cinebook-login .auth-page {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            width: min(1080px, 100%);
+            min-height: 630px;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(139, 92, 246, .25);
+            border-radius: 25px;
+
+            background: rgba(10, 15, 34, .88);
+
+            box-shadow:
+                0 35px 100px rgba(0, 0, 0, .38),
+                0 0 70px rgba(59, 130, 246, .05);
+        }
+
+        /* =========================================
+           LEFT BRAND PANEL
+        ========================================= */
+
+        .cinebook-login .auth-brand {
+            position: relative;
+            overflow: hidden;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            min-width: 0;
+            padding: 43px;
+
+            border-right: 1px solid rgba(139, 92, 246, .18);
+
+            background:
+                radial-gradient(
+                    ellipse at 0% 100%,
+                    rgba(34, 211, 238, .10),
+                    transparent 48%
+                ),
+                radial-gradient(
+                    ellipse at 100% 0%,
+                    rgba(139, 92, 246, .16),
+                    transparent 45%
+                ),
+                linear-gradient(145deg, #111A38, #090F23);
+        }
+
+        .cinebook-login .auth-brand::before {
+            content: "";
+            position: absolute;
+
+            right: -115px;
+            bottom: 80px;
+
+            width: 310px;
+            height: 310px;
+
+            border: 1px solid rgba(34, 211, 238, .10);
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 0 30px rgba(34, 211, 238, .025),
+                0 0 0 65px rgba(139, 92, 246, .025);
+
+            pointer-events: none;
+        }
+
+        .cinebook-login .auth-brand::after {
+            content: "";
+            position: absolute;
+
+            top: 33%;
+            left: -90px;
+
+            width: 210px;
+            height: 210px;
+
+            border-radius: 50%;
+            background: rgba(59, 130, 246, .08);
+            filter: blur(65px);
+
+            pointer-events: none;
+        }
+
+        .cinebook-login .auth-logo {
+            position: relative;
+            z-index: 1;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+
+            width: fit-content;
+
+            color: var(--login-text);
+        }
+
+        .cinebook-login .logo-box {
+            display: grid;
+            place-items: center;
+
+            width: 46px;
+            height: 46px;
+
+            border-radius: 14px;
+
+            background: linear-gradient(
+                135deg,
+                var(--login-cyan),
+                var(--login-blue)
+            );
+
+            color: #07111E;
+            font-size: 25px;
+            font-weight: 900;
+
+            box-shadow: 0 0 30px rgba(34, 211, 238, .16);
+        }
+
+        .cinebook-login .auth-logo h1 {
+            margin: 0;
+
+            color: var(--login-text);
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .cinebook-login .auth-logo h1 span {
+            color: var(--login-cyan);
+        }
+
+        .cinebook-login .brand-content {
+            position: relative;
+            z-index: 1;
+
+            margin: 60px 0 50px;
+        }
+
+        .cinebook-login .brand-small {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            margin: 0 0 24px;
+
+            color: var(--login-cyan);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .cinebook-login .brand-small::before {
+            content: "";
+            width: 22px;
+            height: 2px;
+
+            border-radius: 3px;
+            background: var(--login-cyan);
+        }
+
+        .cinebook-login .brand-content h2 {
+            margin: 0;
+
+            color: var(--login-text);
+            font-size: clamp(37px, 4vw, 49px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1.19;
+        }
+
+        .cinebook-login .brand-content h2 span {
+            background: linear-gradient(
+                100deg,
+                var(--login-cyan),
+                var(--login-blue),
+                #A78BFA
+            );
+
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cinebook-login .brand-description {
+            max-width: 355px;
+            margin: 24px 0 0;
+
+            color: #A3B0CF;
+            font-size: 12px;
+            line-height: 2;
+        }
+
+        /* Cinema decorative illustration */
+
+        .cinebook-login .brand-visual {
+            position: relative;
+            z-index: 1;
+
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            max-width: 350px;
+            padding: 15px;
+
+            border: 1px solid rgba(139, 92, 246, .23);
+            border-radius: 14px;
+
+            background: rgba(7, 11, 26, .40);
+        }
+
+        .cinebook-login .brand-visual-icon {
+            display: grid;
+            place-items: center;
+
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .19);
+            border-radius: 12px;
+
+            background: rgba(34, 211, 238, .07);
+
+            font-size: 21px;
+        }
+
+        .cinebook-login .brand-visual strong {
+            display: block;
+            color: var(--login-text);
+            font-size: 11px;
+        }
+
+        .cinebook-login .brand-visual span {
+            display: block;
+            margin-top: 6px;
+
+            color: var(--login-muted);
+            font-size: 10px;
+        }
+
+        .cinebook-login .brand-bottom {
+            position: relative;
+            z-index: 1;
+
+            margin-top: 35px;
+
+            color: #7583A6;
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           RIGHT LOGIN PANEL
+        ========================================= */
+
+        .cinebook-login .auth-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            min-width: 0;
+            padding: 55px clamp(28px, 5vw, 65px);
+
+            background: rgba(10, 15, 32, .83);
+        }
+
+        .cinebook-login .auth-heading {
+            margin-bottom: 29px;
+        }
+
+        .cinebook-login .auth-label {
+            display: inline-block;
+
+            margin: 0 0 14px;
+            padding: 8px 11px;
+
+            border: 1px solid rgba(34, 211, 238, .18);
+            border-radius: 7px;
+
+            background: rgba(34, 211, 238, .055);
+
+            color: var(--login-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+        }
+
+        .cinebook-login .auth-heading h2 {
+            margin: 0;
+
+            color: var(--login-text);
+            font-size: clamp(26px, 3vw, 33px);
+            font-weight: 800;
+            letter-spacing: -1.2px;
+            line-height: 1.35;
+        }
+
+        .cinebook-login .auth-heading > p:last-child {
+            margin: 12px 0 0;
+
+            color: var(--login-muted);
+            font-size: 11px;
+            line-height: 1.9;
+        }
+
+        /* =========================================
+           ERROR MESSAGE
+        ========================================= */
+
+        .cinebook-login .auth-error {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            margin-bottom: 22px;
+            padding: 13px 15px;
+
+            border: 1px solid rgba(248, 113, 113, .25);
+            border-radius: 10px;
+
+            background: rgba(239, 68, 68, .07);
+
+            color: #FCA5A5;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .cinebook-login .auth-error::before {
+            content: "!";
+            display: grid;
+            place-items: center;
+
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+
+            border-radius: 50%;
+            background: rgba(248, 113, 113, .14);
+
+            color: #FCA5A5;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        /* =========================================
+           LOGIN FORM
+        ========================================= */
+
+        .cinebook-login .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 21px;
+        }
+
+        .cinebook-login .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .cinebook-login .form-group label {
+            color: #DCE5FA;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .cinebook-login .input-wrap {
+            position: relative;
+        }
+
+        .cinebook-login .input-symbol {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+
+            transform: translateY(-50%);
+
+            color: #8190B4;
+            font-size: 15px;
+
+            pointer-events: none;
+        }
+
+        .cinebook-login .form-group input {
+            width: 100%;
+            min-height: 49px;
+            padding: 13px 15px 13px 43px;
+
+            outline: none;
+
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 10px;
+
+            background: rgba(18, 26, 52, .76);
+
+            color: var(--login-text);
+            font-family: inherit;
+            font-size: 11px;
+
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .cinebook-login .form-group input::placeholder {
+            color: #687695;
+        }
+
+        .cinebook-login .form-group input:hover {
+            border-color: rgba(139, 92, 246, .45);
+        }
+
+        .cinebook-login .form-group input:focus {
+            border-color: var(--login-cyan);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, .09);
+        }
+
+        /* =========================================
+           SIGN IN BUTTON
+        ========================================= */
+
+        .cinebook-login .auth-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+
+            width: 100%;
+            min-height: 49px;
+            margin-top: 5px;
+            padding: 14px 18px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: linear-gradient(
+                105deg,
+                var(--login-cyan),
+                var(--login-blue) 60%,
+                var(--login-purple)
+            );
+
+            color: #07111E;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            box-shadow: 0 9px 25px rgba(59, 130, 246, .15);
+
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .cinebook-login .auth-button span {
+            font-size: 18px;
+            line-height: 1;
+            transition: transform .2s ease;
+        }
+
+        .cinebook-login .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 13px 30px rgba(59, 130, 246, .25);
+        }
+
+        .cinebook-login .auth-button:hover span {
+            transform: translateX(4px);
+        }
+
+        .cinebook-login .auth-button:active {
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           FOOTER / REGISTER LINK
+        ========================================= */
+
+        .cinebook-login .auth-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+
+            margin-top: 29px;
+            padding-top: 23px;
+
+            border-top: 1px solid rgba(139, 92, 246, .16);
+
+            color: var(--login-muted);
+            font-size: 10px;
+        }
+
+        .cinebook-login .auth-footer a {
+            color: var(--login-cyan);
+            font-weight: 800;
+
+            transition: color .2s ease;
+        }
+
+        .cinebook-login .auth-footer a:hover {
+            color: #A5F3FC;
+            text-decoration: underline;
+        }
+
+        .cinebook-login .back-home {
+            display: flex;
+            justify-content: center;
+
+            margin-top: 23px;
+
+            color: #8290B1;
+            font-size: 10px;
+
+            transition: color .2s ease;
+        }
+
+        .cinebook-login .back-home:hover {
+            color: var(--login-cyan);
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN
+        ========================================= */
+
+        @media (max-width: 900px) {
+            .cinebook-login {
+                padding: 22px;
+            }
+
+            .cinebook-login .auth-page {
+                grid-template-columns: .85fr 1.15fr;
+            }
+
+            .cinebook-login .auth-brand {
+                padding: 30px;
+            }
+
+            .cinebook-login .brand-content h2 {
+                font-size: 38px;
+            }
+
+            .cinebook-login .auth-card {
+                padding: 40px 30px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .cinebook-login {
+                padding: 15px;
+            }
+
+            .cinebook-login .auth-page {
+                grid-template-columns: 1fr;
+                width: min(470px, 100%);
+                min-height: auto;
+                border-radius: 20px;
+            }
+
+            .cinebook-login .auth-brand {
+                min-height: 0;
+                padding: 25px;
+                border-right: none;
+                border-bottom: 1px solid rgba(139, 92, 246, .18);
+            }
+
+            .cinebook-login .brand-content {
+                margin: 35px 0 0;
+            }
+
+            .cinebook-login .brand-content h2 {
+                font-size: 34px;
+            }
+
+            .cinebook-login .brand-description {
+                margin-top: 15px;
+            }
+
+            .cinebook-login .brand-visual,
+            .cinebook-login .brand-bottom {
+                display: none;
+            }
+
+            .cinebook-login .auth-card {
+                padding: 32px 25px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .cinebook-login .auth-brand,
+            .cinebook-login .auth-card {
+                padding: 23px 19px;
+            }
+
+            .cinebook-login .brand-content h2 {
+                font-size: 30px;
+            }
+
+            .cinebook-login .auth-heading h2 {
+                font-size: 25px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cinebook-login *,
+            .cinebook-login *::before,
+            .cinebook-login *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="cinebook-login">
+
+    <div class="auth-page">
+
+        <!-- LEFT BRAND PANEL -->
+
+        <section class="auth-brand">
+
+            <a href="{{ url_for('index') }}" class="auth-logo">
+
+                <span class="logo-box">C</span>
+
+                <h1>Cine<span>Book</span></h1>
+
+            </a>
+
+            <div class="brand-content">
+
+                <p class="brand-small">
+                    YOUR CINEMA EXPERIENCE
+                </p>
+
+                <h2>
+                    Every seat.<br>
+                    Every show.<br>
+                    <span>One place.</span>
+                </h2>
+
+                <p class="brand-description">
+                    Discover movies, explore theatres, choose your
+                    favourite seats and enjoy a simpler way to manage
+                    your cinema experience.
+                </p>
+
+            </div>
+
+            <div class="brand-visual">
+
+                <div class="brand-visual-icon">🎬</div>
+
+                <div>
+                    <strong>Your next movie adventure starts here</strong>
+                    <span>Discover. Choose. Enjoy.</span>
+                </div>
+
+            </div>
+
+            <div class="brand-bottom">
+                Your seat. Your movie. Your experience.
+            </div>
+
+        </section>
+
+        <!-- RIGHT LOGIN PANEL -->
+
+        <section class="auth-card">
+
+            <div class="auth-heading">
+
+                <p class="auth-label">
+                    WELCOME BACK
+                </p>
+
+                <h2>Sign in to CineBook</h2>
+
+                <p>
+                    Login to manage your bookings and discover
+                    your next movie.
+                </p>
+
+            </div>
+
+            <!-- ERROR MESSAGE -->
+
+            {% if error %}
+                <div class="auth-error" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <!-- LOGIN FORM -->
+
+            <form
+                method="POST"
+                action="{{ url_for('login') }}"
+                class="auth-form"
+            >
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrap">
+
+                        
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrap">
+
+                       
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="auth-button">
+                    Sign In
+                    <span>→</span>
+                </button>
+
+            </form>
+
+            <div class="auth-footer">
+
+                <span>Don't have an account?</span>
+
+                <a href="{{ url_for('register') }}">
+                    Create Account
+                </a>
+
+            </div>
+
+            <a href="{{ url_for('index') }}" class="back-home">
+                ← Back to Home
+            </a>
+
+        </section>
+
+    </div>
+
+</body>
+</html>

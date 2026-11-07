@@ -1,0 +1,1027 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineBook | Manage Movies</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CINEBOOK MOVIE MANAGEMENT
+        ========================================= */
+
+        .admin-movies-page {
+            --movie-bg: #070B1A;
+            --movie-panel: #10162D;
+            --movie-panel-hover: #151D3A;
+            --movie-border: rgba(139, 92, 246, .23);
+            --movie-text: #F1F5FF;
+            --movie-muted: #929FBE;
+            --movie-cyan: #22D3EE;
+            --movie-blue: #3B82F6;
+            --movie-purple: #8B5CF6;
+
+            min-height: 100vh;
+            margin: 0;
+            color: var(--movie-text);
+            font-family: 'Inter', sans-serif;
+
+            background:
+                radial-gradient(
+                    ellipse at 5% 0%,
+                    rgba(59, 130, 246, .10),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    ellipse at 95% 25%,
+                    rgba(139, 92, 246, .10),
+                    transparent 32%
+                ),
+                var(--movie-bg);
+        }
+
+        .admin-movies-page *,
+        .admin-movies-page *::before,
+        .admin-movies-page *::after {
+            box-sizing: border-box;
+        }
+
+        .admin-movies-page a {
+            text-decoration: none;
+        }
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .admin-movies-page .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+
+            min-height: 76px;
+            padding: 12px 5%;
+
+            background: rgba(7, 11, 26, .92);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(139, 92, 246, .20);
+        }
+
+        .admin-movies-page .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+            color: var(--movie-text);
+        }
+
+        .admin-movies-page .logo-mark {
+            display: grid;
+            place-items: center;
+
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+
+            border-radius: 12px;
+            background: linear-gradient(
+                135deg,
+                var(--movie-cyan),
+                var(--movie-blue)
+            );
+
+            color: #07111E;
+            font-size: 23px;
+            font-weight: 800;
+
+            box-shadow: 0 0 23px rgba(34, 211, 238, .13);
+        }
+
+        .admin-movies-page .logo-text {
+            color: var(--movie-text);
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -.8px;
+        }
+
+        .admin-movies-page .logo-text span {
+            color: var(--movie-cyan);
+        }
+
+        .admin-movies-page .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .admin-movies-page .nav-links a {
+            padding: 11px 14px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+
+            color: var(--movie-muted);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .admin-movies-page .nav-links a:hover {
+            color: var(--movie-text);
+            background: rgba(139, 92, 246, .07);
+        }
+
+        .admin-movies-page .nav-links a.active {
+            color: var(--movie-cyan);
+            border-color: rgba(34, 211, 238, .15);
+            background: rgba(34, 211, 238, .07);
+        }
+
+        .admin-movies-page .user-area {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+        }
+
+        .admin-movies-page .admin-avatar {
+            display: grid;
+            place-items: center;
+
+            width: 37px;
+            height: 37px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .25);
+            border-radius: 12px;
+            background: rgba(34, 211, 238, .09);
+
+            color: var(--movie-cyan);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .admin-movies-page .user-details strong {
+            display: block;
+            color: var(--movie-text);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .admin-movies-page .user-details small {
+            display: block;
+            margin-top: 4px;
+            color: var(--movie-muted);
+            font-size: 10px;
+        }
+
+        .admin-movies-page .logout {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 10px 13px;
+
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 10px;
+
+            color: #D4DDF5;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .admin-movies-page .logout:hover {
+            color: var(--movie-cyan);
+            border-color: var(--movie-cyan);
+            background: rgba(34, 211, 238, .05);
+        }
+
+        /* =========================================
+           MAIN CONTAINER
+        ========================================= */
+
+        .admin-movies-page .admin-movies-container {
+            width: min(1380px, 92%);
+            margin: 0 auto;
+            padding: 42px 0 65px;
+        }
+
+        /* =========================================
+           PAGE HEADER
+        ========================================= */
+
+        .admin-movies-page .movies-page-header {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 25px;
+
+            overflow: hidden;
+            padding: 34px;
+            margin-bottom: 36px;
+
+            border: 1px solid var(--movie-border);
+            border-radius: 22px;
+
+            background:
+                radial-gradient(
+                    ellipse at 95% 0%,
+                    rgba(139, 92, 246, .16),
+                    transparent 42%
+                ),
+                radial-gradient(
+                    ellipse at 0% 100%,
+                    rgba(34, 211, 238, .08),
+                    transparent 40%
+                ),
+                linear-gradient(120deg, #111936, #0B1025);
+        }
+
+        .admin-movies-page .movies-page-header::after {
+            content: "MOVIES";
+            position: absolute;
+            right: 22px;
+            bottom: -8px;
+
+            color: rgba(139, 92, 246, .045);
+            font-size: clamp(55px, 9vw, 115px);
+            font-weight: 800;
+            letter-spacing: -5px;
+
+            pointer-events: none;
+        }
+
+        .admin-movies-page .movies-page-header > div,
+        .admin-movies-page .add-movie-button {
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-movies-page .admin-section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 17px;
+
+            color: var(--movie-cyan);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+        }
+
+        .admin-movies-page .admin-section-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--movie-cyan);
+            box-shadow: 0 0 12px rgba(34, 211, 238, .55);
+        }
+
+        .admin-movies-page .movies-page-header h1 {
+            margin: 0;
+            color: var(--movie-text);
+            font-size: clamp(32px, 4vw, 43px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+        .admin-movies-page .movies-page-header h1 span {
+            color: var(--movie-cyan);
+        }
+
+        .admin-movies-page .movies-page-header p {
+            max-width: 570px;
+            margin: 13px 0 0;
+
+            color: var(--movie-muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        /* Add movie button */
+
+        .admin-movies-page .add-movie-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            min-height: 46px;
+            padding: 12px 17px;
+
+            border: 0;
+            border-radius: 11px;
+
+            background: linear-gradient(
+                110deg,
+                var(--movie-cyan),
+                var(--movie-blue) 65%,
+                var(--movie-purple)
+            );
+
+            color: #07111E;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+
+            box-shadow: 0 8px 24px rgba(59, 130, 246, .14);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .admin-movies-page .add-movie-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, .23);
+        }
+
+        .admin-movies-page .add-movie-button > span {
+            font-size: 21px;
+            line-height: 1;
+        }
+
+        /* =========================================
+           MOVIE DATABASE SECTION
+        ========================================= */
+
+        .admin-movies-page .movie-database-section {
+            padding: 28px;
+
+            border: 1px solid rgba(139, 92, 246, .18);
+            border-radius: 20px;
+
+            background: rgba(12, 18, 39, .60);
+        }
+
+        .admin-movies-page .movie-section-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+
+            padding-bottom: 23px;
+            margin-bottom: 24px;
+
+            border-bottom: 1px solid rgba(139, 92, 246, .16);
+        }
+
+        .admin-movies-page .database-label {
+            display: block;
+            margin-bottom: 8px;
+
+            color: var(--movie-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+        }
+
+        .admin-movies-page .movie-section-header h2 {
+            margin: 0;
+            color: var(--movie-text);
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: -.6px;
+        }
+
+        .admin-movies-page .movie-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 9px 13px;
+
+            border: 1px solid rgba(34, 211, 238, .19);
+            border-radius: 10px;
+            background: rgba(34, 211, 238, .05);
+
+            color: var(--movie-muted);
+            font-size: 11px;
+        }
+
+        .admin-movies-page .movie-count span {
+            color: var(--movie-cyan);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        /* =========================================
+           MOVIE GRID
+        ========================================= */
+
+        .admin-movies-page .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .admin-movies-page .movie-admin-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+            padding: 22px;
+
+            border: 1px solid rgba(139, 92, 246, .20);
+            border-radius: 16px;
+
+            background: linear-gradient(
+                145deg,
+                rgba(18, 26, 52, .97),
+                rgba(11, 17, 37, .97)
+            );
+
+            transition: transform .22s ease, border-color .22s ease,
+                        box-shadow .22s ease;
+        }
+
+        .admin-movies-page .movie-admin-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+
+            background: linear-gradient(
+                90deg,
+                var(--movie-cyan),
+                var(--movie-blue),
+                var(--movie-purple)
+            );
+
+            opacity: 0;
+            transition: opacity .22s ease;
+        }
+
+        .admin-movies-page .movie-admin-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(34, 211, 238, .35);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, .17);
+        }
+
+        .admin-movies-page .movie-admin-card:hover::before {
+            opacity: 1;
+        }
+
+        .admin-movies-page .movie-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .admin-movies-page .movie-icon {
+            display: grid;
+            place-items: center;
+            width: 49px;
+            height: 49px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .19);
+            border-radius: 14px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .10),
+                rgba(139, 92, 246, .12)
+            );
+
+            font-size: 23px;
+        }
+
+        .admin-movies-page .movie-id {
+            padding: 7px 9px;
+
+            border: 1px solid rgba(139, 92, 246, .18);
+            border-radius: 8px;
+            background: rgba(139, 92, 246, .06);
+
+            color: #B9A8FA;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        .admin-movies-page .movie-card-content {
+            flex: 1;
+        }
+
+        .admin-movies-page .movie-card-content h3 {
+            overflow-wrap: anywhere;
+            margin: 0 0 11px;
+
+            color: var(--movie-text);
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .admin-movies-page .movie-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            color: var(--movie-muted);
+            font-size: 10px;
+        }
+
+        .admin-movies-page .movie-meta > span:first-child {
+            padding: 5px 8px;
+
+            border: 1px solid rgba(34, 211, 238, .16);
+            border-radius: 6px;
+            background: rgba(34, 211, 238, .05);
+
+            color: var(--movie-cyan);
+        }
+
+        .admin-movies-page .meta-divider {
+            color: #657392;
+        }
+
+        .admin-movies-page .movie-details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .admin-movies-page .movie-detail {
+            min-width: 0;
+            padding: 12px;
+
+            border: 1px solid rgba(139, 92, 246, .14);
+            border-radius: 10px;
+            background: rgba(7, 11, 26, .38);
+        }
+
+        .admin-movies-page .movie-detail small {
+            display: block;
+            margin-bottom: 7px;
+
+            color: #7886A7;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .8px;
+        }
+
+        .admin-movies-page .movie-detail strong {
+            display: block;
+            overflow-wrap: anywhere;
+
+            color: #DCE6FF;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .admin-movies-page .movie-description {
+            display: -webkit-box;
+            overflow: hidden;
+            margin: 17px 0 20px;
+
+            color: var(--movie-muted);
+            font-size: 11px;
+            line-height: 1.8;
+
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+        }
+
+        .admin-movies-page .movie-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            padding-top: 17px;
+            margin-top: 21px;
+
+            border-top: 1px solid rgba(139, 92, 246, .15);
+        }
+
+        .admin-movies-page .movie-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            color: #86E9C1;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .admin-movies-page .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34D399;
+            box-shadow: 0 0 8px rgba(52, 211, 153, .4);
+        }
+
+        .admin-movies-page .movie-card-footer form {
+            margin: 0;
+        }
+
+        .admin-movies-page .delete-movie-button {
+            padding: 9px 13px;
+
+            border: 1px solid rgba(248, 113, 113, .25);
+            border-radius: 9px;
+            background: rgba(248, 113, 113, .06);
+
+            color: #FCA5A5;
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
+
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .admin-movies-page .delete-movie-button:hover {
+            border-color: #F87171;
+            background: rgba(248, 113, 113, .13);
+            color: #FEE2E2;
+        }
+
+        /* =========================================
+           EMPTY STATE
+        ========================================= */
+
+        .admin-movies-page .movies-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 330px;
+            padding: 35px 20px;
+            text-align: center;
+
+            border: 1px dashed rgba(139, 92, 246, .30);
+            border-radius: 16px;
+
+            background: rgba(16, 22, 45, .40);
+        }
+
+        .admin-movies-page .empty-movie-icon {
+            display: grid;
+            place-items: center;
+            width: 70px;
+            height: 70px;
+            margin-bottom: 20px;
+
+            border: 1px solid rgba(34, 211, 238, .19);
+            border-radius: 22px;
+            background: rgba(34, 211, 238, .06);
+
+            font-size: 31px;
+        }
+
+        .admin-movies-page .movies-empty-state h3 {
+            margin: 0 0 10px;
+            color: var(--movie-text);
+            font-size: 20px;
+        }
+
+        .admin-movies-page .movies-empty-state p {
+            max-width: 380px;
+            margin: 0 0 23px;
+
+            color: var(--movie-muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .admin-movies-page .dashboard-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+
+            padding: 24px 5%;
+            border-top: 1px solid rgba(139, 92, 246, .18);
+            background: rgba(7, 11, 26, .6);
+
+            color: var(--movie-muted);
+            font-size: 11px;
+        }
+
+        .admin-movies-page .footer-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            color: var(--movie-text);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .admin-movies-page .footer-logo .logo-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            font-size: 17px;
+        }
+
+        .admin-movies-page .dashboard-footer p {
+            margin: 0;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1050px) {
+            .admin-movies-page .movie-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-movies-page .navbar {
+                padding-left: 3%;
+                padding-right: 3%;
+                gap: 13px;
+            }
+
+            .admin-movies-page .nav-links a {
+                padding: 10px;
+            }
+
+            .admin-movies-page .user-details {
+                display: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .admin-movies-page .navbar {
+                position: relative;
+                flex-wrap: wrap;
+                padding: 14px 4%;
+                gap: 13px;
+            }
+
+            .admin-movies-page .nav-links {
+                order: 3;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .admin-movies-page .nav-links a {
+                flex-shrink: 0;
+            }
+
+            .admin-movies-page .user-area {
+                margin-left: auto;
+            }
+
+            .admin-movies-page .admin-movies-container {
+                width: 92%;
+                padding-top: 25px;
+            }
+
+            .admin-movies-page .movies-page-header {
+                padding: 25px 21px;
+            }
+
+            .admin-movies-page .movies-page-header h1 {
+                font-size: 32px;
+            }
+
+            .admin-movies-page .movies-page-header::after {
+                font-size: 60px;
+                letter-spacing: -3px;
+            }
+
+            .admin-movies-page .movie-database-section {
+                padding: 19px 14px;
+            }
+
+            .admin-movies-page .movie-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-movies-page .movie-admin-card {
+                padding: 20px;
+            }
+
+            .admin-movies-page .dashboard-footer {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .admin-movies-page *,
+            .admin-movies-page *::before,
+            .admin-movies-page *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-navbar.css') }}">
+</head>
+
+<body class="admin-movies-page">
+
+    <!-- NAVBAR -->
+    {% include 'admin_navbar.html' %}
+
+    <!-- MAIN -->
+    <main class="admin-movies-container">
+
+        <!-- PAGE HEADER -->
+        <section class="movies-page-header">
+
+            <div>
+                <div class="admin-section-label">
+                    <span class="admin-section-dot"></span>
+                    MOVIE MANAGEMENT
+                </div>
+
+                <h1>
+                    Manage <span>Movies.</span>
+                </h1>
+
+                <p>
+                    Manage your movie catalogue, review movie details
+                    and keep the CineBook database up to date.
+                </p>
+            </div>
+
+            <a href="{{ url_for('add_movie') }}" class="add-movie-button">
+                <span>+</span>
+                Add New Movie
+            </a>
+
+        </section>
+
+        <!-- MOVIE DATABASE -->
+        <section class="movie-database-section">
+
+            <div class="movie-section-header">
+
+                <div>
+                    <span class="database-label">DATABASE RECORDS</span>
+                    <h2>All Movies</h2>
+                </div>
+
+                <div class="movie-count">
+                    <span>{{ movies|length }}</span>
+                    Movies
+                </div>
+
+            </div>
+
+            {% if movies %}
+
+                <div class="movie-grid">
+
+                    {% for movie in movies %}
+
+                        <article class="movie-admin-card">
+
+                            <div class="movie-card-top">
+
+                                <div class="movie-icon">🎬</div>
+
+                                <span class="movie-id">
+                                    #{{ "%03d" | format(movie.movie_id) }}
+                                </span>
+
+                            </div>
+
+                            <div class="movie-card-content">
+
+                                <h3>{{ movie.title }}</h3>
+
+                                <div class="movie-meta">
+                                    <span>{{ movie.genre }}</span>
+                                    <span class="meta-divider">•</span>
+                                    <span>{{ movie.language }}</span>
+                                </div>
+
+                                <div class="movie-details">
+
+                                    <div class="movie-detail">
+                                        <small>DURATION</small>
+                                        <strong>{{ movie.duration }} min</strong>
+                                    </div>
+
+                                    <div class="movie-detail">
+                                        <small>RELEASE DATE</small>
+                                        <strong>{{ movie.release_date }}</strong>
+                                    </div>
+
+                                </div>
+
+                                {% if movie.description %}
+                                    <p class="movie-description">
+                                        {{ movie.description }}
+                                    </p>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="movie-card-footer">
+
+                                <span class="movie-status">
+                                    <span class="status-dot"></span>
+                                    In Catalogue
+                                </span>
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('delete_movie', movie_id=movie.movie_id) }}"
+                                    onsubmit="return confirm('Are you sure you want to delete this movie?');">
+
+                                    <button
+                                        type="submit"
+                                        class="delete-movie-button">
+                                        Delete Movie
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <!-- EMPTY STATE -->
+                <div class="movies-empty-state">
+
+                    <div class="empty-movie-icon">🎬</div>
+
+                    <h3>No Movies Yet</h3>
+
+                    <p>
+                        Your movie database is currently empty.
+                        Add your first movie to get started.
+                    </p>
+
+                    <a href="{{ url_for('add_movie') }}"
+                       class="add-movie-button">
+                        <span>+</span>
+                        Add First Movie
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="dashboard-footer">
+
+        <div class="footer-logo">
+            <span class="logo-mark">C</span>
+            CineBook
+        </div>
+
+        <p>Movie Management</p>
+
+        <span>© 2026 CineBook</span>
+
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,1292 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineBook | Analytics</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CINEBOOK ANALYTICS
+           Unified cyan / blue / purple theme
+        ========================================= */
+
+        :root {
+            --analytics-bg: #070B1A;
+            --analytics-panel: #10162D;
+            --analytics-panel-hover: #151D3A;
+            --analytics-border: rgba(139, 92, 246, 0.23);
+            --analytics-text: #F1F5FF;
+            --analytics-muted: #929FBE;
+            --analytics-cyan: #22D3EE;
+            --analytics-blue: #3B82F6;
+            --analytics-purple: #8B5CF6;
+            --analytics-radius: 18px;
+        }
+
+        .analytics-page {
+            width: min(1450px, 94%);
+            margin: 0 auto;
+            padding: 30px 0 60px;
+            color: var(--analytics-text);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .analytics-page * {
+            box-sizing: border-box;
+        }
+
+        .analytics-page a {
+            text-decoration: none;
+        }
+
+        .analytics-page button,
+        .analytics-page input {
+            font: inherit;
+        }
+
+        /* Hero */
+
+        .analytics-hero {
+            position: relative;
+            overflow: hidden;
+            padding: 36px;
+            margin-bottom: 28px;
+            border: 1px solid var(--analytics-border);
+            border-radius: 24px;
+            background:
+                radial-gradient(
+                    circle at 90% 10%,
+                    rgba(139, 92, 246, 0.20),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 10% 100%,
+                    rgba(34, 211, 238, 0.10),
+                    transparent 35%
+                ),
+                linear-gradient(125deg, #111936, #0B1025);
+        }
+
+        .analytics-hero::after {
+            content: "C";
+            position: absolute;
+            right: 5%;
+            top: -70px;
+            font-size: 260px;
+            font-weight: 800;
+            line-height: 1;
+            color: rgba(139, 92, 246, 0.055);
+            pointer-events: none;
+        }
+
+        .analytics-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--analytics-cyan);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .analytics-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--analytics-cyan);
+            box-shadow: 0 0 12px rgba(34, 211, 238, .65);
+        }
+
+        .analytics-hero h1 {
+            position: relative;
+            z-index: 1;
+            margin: 0 0 13px;
+            font-size: clamp(30px, 4vw, 44px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.15;
+            color: var(--analytics-text);
+        }
+
+        .analytics-hero h1 span {
+            color: var(--analytics-cyan);
+        }
+
+        .analytics-hero p {
+            position: relative;
+            z-index: 1;
+            max-width: 650px;
+            margin: 0;
+            color: #AAB5D1;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .analytics-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 24px;
+        }
+
+        .analytics-tag {
+            padding: 8px 11px;
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 9px;
+            background: rgba(139, 92, 246, .07);
+            color: #C7CFF0;
+            font-size: 11px;
+        }
+
+        .analytics-tag strong {
+            color: var(--analytics-cyan);
+        }
+
+        /* Overview cards */
+
+        .analytics-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 38px;
+        }
+
+        .analytics-metric {
+            position: relative;
+            overflow: hidden;
+            padding: 23px;
+            border: 1px solid var(--analytics-border);
+            border-radius: var(--analytics-radius);
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20, 29, 58, .98),
+                    rgba(12, 18, 39, .98)
+                );
+            transition: transform .2s, border-color .2s;
+        }
+
+        .analytics-metric:hover {
+            transform: translateY(-4px);
+            border-color: rgba(34, 211, 238, .45);
+        }
+
+        .analytics-metric::after {
+            content: "";
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            right: -50px;
+            bottom: -55px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, .10);
+            filter: blur(14px);
+        }
+
+        .analytics-metric-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .analytics-metric-label {
+            color: var(--analytics-muted);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .analytics-metric-icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(34, 211, 238, .17);
+            border-radius: 12px;
+            background: rgba(34, 211, 238, .08);
+            color: var(--analytics-cyan);
+            font-size: 20px;
+        }
+
+        .analytics-metric-number {
+            display: block;
+            margin-top: 22px;
+            color: var(--analytics-text);
+            font-size: 35px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .analytics-metric-number span {
+            color: var(--analytics-cyan);
+        }
+
+        .analytics-metric-description {
+            display: block;
+            margin-top: 9px;
+            color: var(--analytics-muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* Section headings */
+
+        .analytics-section {
+            margin-top: 38px;
+        }
+
+        .analytics-section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 17px;
+        }
+
+        .analytics-kicker {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--analytics-cyan);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+            text-transform: uppercase;
+        }
+
+        .analytics-section-heading h2 {
+            margin: 0;
+            color: var(--analytics-text);
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: -.6px;
+        }
+
+        .analytics-section-description {
+            margin-top: 7px;
+            color: var(--analytics-muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .analytics-count {
+            padding: 8px 11px;
+            border: 1px solid var(--analytics-border);
+            border-radius: 9px;
+            background: rgba(139, 92, 246, .07);
+            color: #D3C7FF;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* Panels */
+
+        .analytics-panel {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--analytics-border);
+            border-radius: var(--analytics-radius);
+            background: var(--analytics-panel);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, .10);
+        }
+
+        .analytics-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 19px 21px;
+            border-bottom: 1px solid rgba(139, 92, 246, .15);
+            background: rgba(139, 92, 246, .025);
+        }
+
+        .analytics-panel-title {
+            color: var(--analytics-text);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .analytics-panel-subtitle {
+            margin-top: 5px;
+            color: var(--analytics-muted);
+            font-size: 11px;
+        }
+
+        .analytics-search {
+            width: min(240px, 100%);
+            padding: 10px 13px;
+            outline: none;
+            border: 1px solid rgba(139, 92, 246, .23);
+            border-radius: 10px;
+            background: #0A1024;
+            color: var(--analytics-text);
+            font-size: 12px;
+            transition: .2s;
+        }
+
+        .analytics-search::placeholder {
+            color: #7784A5;
+        }
+
+        .analytics-search:focus {
+            border-color: var(--analytics-cyan);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, .07);
+        }
+
+        /* Tables */
+
+        .analytics-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .analytics-table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        .analytics-table thead {
+            background: rgba(139, 92, 246, .045);
+        }
+
+        .analytics-table th {
+            padding: 15px 20px;
+            color: #98A6C7;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(139, 92, 246, .15);
+        }
+
+        .analytics-table td {
+            padding: 16px 20px;
+            color: #D5DDF3;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(139, 92, 246, .09);
+        }
+
+        .analytics-table tbody tr {
+            transition: background .2s;
+        }
+
+        .analytics-table tbody tr:hover {
+            background: rgba(59, 130, 246, .06);
+        }
+
+        .analytics-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .analytics-primary-cell {
+            color: #F1F5FF;
+            font-weight: 600;
+        }
+
+        .analytics-secondary-cell {
+            margin-top: 5px;
+            color: var(--analytics-muted);
+            font-size: 11px;
+        }
+
+        .analytics-id {
+            display: inline-block;
+            padding: 6px 9px;
+            border: 1px solid rgba(34, 211, 238, .18);
+            border-radius: 7px;
+            background: rgba(34, 211, 238, .07);
+            color: var(--analytics-cyan);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .analytics-money {
+            color: var(--analytics-cyan) !important;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .analytics-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 10px;
+            border: 1px solid rgba(139, 92, 246, .18);
+            border-radius: 20px;
+            background: rgba(139, 92, 246, .06);
+            color: #C8B8FF;
+            font-size: 10px;
+            text-transform: capitalize;
+        }
+
+        .analytics-status::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--analytics-purple);
+        }
+
+        .analytics-status.confirmed,
+        .analytics-status.paid,
+        .analytics-status.success,
+        .analytics-status.completed {
+            color: var(--analytics-cyan);
+            border-color: rgba(34, 211, 238, .20);
+            background: rgba(34, 211, 238, .06);
+        }
+
+        .analytics-status.confirmed::before,
+        .analytics-status.paid::before,
+        .analytics-status.success::before,
+        .analytics-status.completed::before {
+            background: var(--analytics-cyan);
+        }
+
+        .analytics-status.pending {
+            color: #C4B5FD;
+        }
+
+        .analytics-status.cancelled,
+        .analytics-status.failed {
+            color: #F9A8D4;
+            border-color: rgba(244, 114, 182, .20);
+            background: rgba(244, 114, 182, .06);
+        }
+
+        .analytics-status.cancelled::before,
+        .analytics-status.failed::before {
+            background: #F472B6;
+        }
+
+        .analytics-table-footer {
+            padding: 13px 20px;
+            border-top: 1px solid rgba(139, 92, 246, .12);
+            color: var(--analytics-muted);
+            font-size: 11px;
+        }
+
+        /* Insight cards */
+
+        .analytics-two-column {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .analytics-insight-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            padding: 17px;
+        }
+
+        .analytics-insight {
+            min-width: 0;
+            padding: 17px;
+            border: 1px solid rgba(139, 92, 246, .16);
+            border-radius: 13px;
+            background: rgba(139, 92, 246, .035);
+            transition: .2s;
+        }
+
+        .analytics-insight:hover {
+            border-color: rgba(34, 211, 238, .32);
+            background: rgba(34, 211, 238, .035);
+            transform: translateY(-2px);
+        }
+
+        .analytics-insight-icon {
+            display: grid;
+            place-items: center;
+            width: 37px;
+            height: 37px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(139, 92, 246, .18);
+            border-radius: 11px;
+            background: rgba(139, 92, 246, .09);
+            color: #BBA2FF;
+            font-size: 18px;
+        }
+
+        .analytics-insight h3 {
+            margin: 0;
+            color: var(--analytics-text);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .analytics-insight p {
+            margin-top: 7px;
+            color: var(--analytics-muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .analytics-insight-count {
+            display: block;
+            margin-top: 12px;
+            color: var(--analytics-cyan);
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .analytics-empty {
+            grid-column: 1 / -1;
+            padding: 30px 16px;
+            text-align: center;
+            color: var(--analytics-muted);
+            white-space: normal;
+        }
+
+        .analytics-empty-icon {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--analytics-purple);
+            font-size: 28px;
+        }
+
+        .analytics-empty strong {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--analytics-text);
+            font-size: 13px;
+        }
+
+        .analytics-empty p {
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        /* Payments */
+
+        .analytics-payment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 13px;
+            padding: 18px;
+        }
+
+        .analytics-payment-card {
+            min-width: 0;
+            padding: 19px;
+            border: 1px solid rgba(139, 92, 246, .18);
+            border-radius: 14px;
+            background: linear-gradient(
+                145deg,
+                rgba(139, 92, 246, .055),
+                rgba(59, 130, 246, .025)
+            );
+            transition: .2s;
+        }
+
+        .analytics-payment-card:hover {
+            border-color: rgba(34, 211, 238, .3);
+            transform: translateY(-2px);
+        }
+
+        .analytics-payment-symbol {
+            display: grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(34, 211, 238, .16);
+            border-radius: 10px;
+            background: rgba(34, 211, 238, .07);
+            color: var(--analytics-cyan);
+            font-size: 17px;
+        }
+
+        .analytics-payment-card h3 {
+            margin: 0;
+            color: var(--analytics-text);
+            font-size: 13px;
+            text-transform: capitalize;
+            overflow-wrap: anywhere;
+        }
+
+        .analytics-payment-amount {
+            display: block;
+            margin-top: 13px;
+            color: var(--analytics-cyan);
+            font-size: 22px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .analytics-payment-card p {
+            margin-top: 7px;
+            color: var(--analytics-muted);
+            font-size: 11px;
+        }
+
+        /* Footer */
+
+        .analytics-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 50px;
+            padding-top: 23px;
+            border-top: 1px solid rgba(139, 92, 246, .18);
+            color: var(--analytics-muted);
+            font-size: 11px;
+        }
+
+        .analytics-footer strong {
+            color: var(--analytics-cyan);
+            font-size: 14px;
+        }
+
+        .analytics-footer-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 900px) {
+            .analytics-two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-payment-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .analytics-page {
+                width: 94%;
+                padding-top: 22px;
+            }
+
+            .analytics-hero {
+                padding: 26px 21px;
+            }
+
+            .analytics-hero h1 {
+                font-size: 31px;
+            }
+
+            .analytics-metrics {
+                grid-template-columns: 1fr;
+                gap: 13px;
+            }
+
+            .analytics-metric {
+                padding: 20px;
+            }
+
+            .analytics-section-heading h2 {
+                font-size: 20px;
+            }
+
+            .analytics-panel-header {
+                align-items: flex-start;
+            }
+
+            .analytics-search {
+                width: 100%;
+            }
+
+            .analytics-payment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-insight-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-empty {
+                grid-column: auto;
+            }
+        }
+
+        @media print {
+            .analytics-search {
+                display: none;
+            }
+
+            .analytics-page,
+            .analytics-panel,
+            .analytics-metric,
+            .analytics-hero {
+                color: #111 !important;
+                background: white !important;
+                box-shadow: none !important;
+            }
+
+            .analytics-table td,
+            .analytics-table th,
+            .analytics-section-heading h2,
+            .analytics-hero h1,
+            .analytics-insight h3 {
+                color: #111 !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-navbar.css') }}">
+</head>
+
+<body>
+
+<!-- Use the existing CineBook navigation -->
+{% include 'admin_navbar.html' %}
+
+<main class="analytics-page">
+
+    <!-- HERO -->
+    <section class="analytics-hero">
+        <div class="analytics-eyebrow">
+            <span class="analytics-dot"></span>
+            Phase 03 · Data Intelligence
+        </div>
+
+        <h1>Analytics <span>Studio.</span></h1>
+
+        <p>
+            Explore CineBook's database through booking insights,
+            movie performance, payment analysis and reusable SQL
+            operations — all in one place.
+        </p>
+
+        <div class="analytics-tags">
+            <span class="analytics-tag"><strong>01</strong> Joins</span>
+            <span class="analytics-tag"><strong>02</strong> Subqueries</span>
+            <span class="analytics-tag"><strong>03</strong> Views</span>
+            <span class="analytics-tag"><strong>04</strong> Procedures</span>
+            <span class="analytics-tag"><strong>05</strong> Functions</span>
+        </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section class="analytics-metrics">
+
+        <article class="analytics-metric">
+            <div class="analytics-metric-top">
+                <span class="analytics-metric-label">Booking Records</span>
+                <span class="analytics-metric-icon">▤</span>
+            </div>
+            <strong class="analytics-metric-number">
+                {{ bookings|length }}
+            </strong>
+            <span class="analytics-metric-description">
+                Records returned by the booking view
+            </span>
+        </article>
+
+        <article class="analytics-metric">
+            <div class="analytics-metric-top">
+                <span class="analytics-metric-label">Movies Analysed</span>
+                <span class="analytics-metric-icon">▧</span>
+            </div>
+            <strong class="analytics-metric-number">
+                {{ movie_stats|length }}
+            </strong>
+            <span class="analytics-metric-description">
+                Movies included in performance analysis
+            </span>
+        </article>
+
+        <article class="analytics-metric">
+            <div class="analytics-metric-top">
+                <span class="analytics-metric-label">Payment Records</span>
+                <span class="analytics-metric-icon">₹</span>
+            </div>
+            <strong class="analytics-metric-number">
+                {{ payments|length }}
+            </strong>
+            <span class="analytics-metric-description">
+                Records returned by the payment view
+            </span>
+        </article>
+
+    </section>
+
+    <!-- MOVIE PERFORMANCE -->
+    <section class="analytics-section">
+
+        <div class="analytics-section-heading">
+            <div>
+                <span class="analytics-kicker">Query 01 · JOIN + GROUP BY</span>
+                <h2>Movie Performance</h2>
+                <p class="analytics-section-description">
+                    Compare booking counts and booking value across movies.
+                </p>
+            </div>
+            <span class="analytics-count">{{ movie_stats|length }} movies</span>
+        </div>
+
+        <div class="analytics-panel">
+            <div class="analytics-panel-header">
+                <div>
+                    <div class="analytics-panel-title">Performance Report</div>
+                    <div class="analytics-panel-subtitle">
+                        Movies joined with shows and bookings
+                    </div>
+                </div>
+                <input class="analytics-search"
+                       type="search"
+                       placeholder="Search movies..."
+                       data-table-search="movie-table">
+            </div>
+
+            <div class="analytics-table-wrap">
+                <table class="analytics-table" id="movie-table">
+                    <thead>
+                        <tr>
+                            <th>Movie</th>
+                            <th>Total Bookings</th>
+                            <th>Booking Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for movie in movie_stats %}
+                        <tr>
+                            <td>
+                                <div class="analytics-primary-cell">{{ movie.title }}</div>
+                                <div class="analytics-secondary-cell">
+                                    Movie ID #{{ movie.movie_id }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="analytics-id">{{ movie.total_bookings }}</span>
+                            </td>
+                            <td class="analytics-money">
+                                ₹{{ "%.2f"|format(movie.booking_value|float) }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3">
+                                <div class="analytics-empty">
+                                    <span class="analytics-empty-icon">🎬</span>
+                                    <strong>No movie records found</strong>
+                                    <p>Add movies to CineBook to populate this report.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="analytics-table-footer">
+                Data source: movies, shows and bookings
+            </div>
+        </div>
+    </section>
+
+    <!-- SUBQUERY INSIGHTS -->
+    <section class="analytics-section">
+
+        <div class="analytics-section-heading">
+            <div>
+                <span class="analytics-kicker">Query 02 · Nested Queries</span>
+                <h2>Discovery & Insights</h2>
+                <p class="analytics-section-description">
+                    Find above-average movies and movies without bookings.
+                </p>
+            </div>
+        </div>
+
+        <div class="analytics-two-column">
+
+            <div class="analytics-panel">
+                <div class="analytics-panel-header">
+                    <div>
+                        <div class="analytics-panel-title">Above-Average Movies</div>
+                        <div class="analytics-panel-subtitle">
+                            Movies exceeding the average booking count
+                        </div>
+                    </div>
+                    <span class="analytics-count">{{ popular_movies|length }} found</span>
+                </div>
+
+                <div class="analytics-insight-grid">
+                    {% for movie in popular_movies %}
+                    <article class="analytics-insight">
+                        <div class="analytics-insight-icon">↗</div>
+                        <h3>{{ movie.title }}</h3>
+                        <p>Booking count is above the calculated average.</p>
+                        <span class="analytics-insight-count">
+                            {{ movie.total_bookings }} bookings
+                        </span>
+                    </article>
+                    {% else %}
+                    <div class="analytics-empty">
+                        <span class="analytics-empty-icon">⌁</span>
+                        <strong>No above-average movies yet</strong>
+                        <p>The query returned no movies above the average booking count.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="analytics-panel">
+                <div class="analytics-panel-header">
+                    <div>
+                        <div class="analytics-panel-title">Movies Without Bookings</div>
+                        <div class="analytics-panel-subtitle">
+                            Identified using a NOT EXISTS subquery
+                        </div>
+                    </div>
+                    <span class="analytics-count">{{ unbooked_movies|length }} found</span>
+                </div>
+
+                <div class="analytics-insight-grid">
+                    {% for movie in unbooked_movies %}
+                    <article class="analytics-insight">
+                        <div class="analytics-insight-icon">◷</div>
+                        <h3>{{ movie.title }}</h3>
+                        <p>No booking is associated with this movie's shows.</p>
+                        <span class="analytics-insight-count">0 bookings</span>
+                    </article>
+                    {% else %}
+                    <div class="analytics-empty">
+                        <span class="analytics-empty-icon">✓</span>
+                        <strong>No unbooked movies found</strong>
+                        <p>Every movie has at least one associated booking in the current data.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CUSTOMER BOOKINGS -->
+    <section class="analytics-section">
+
+        <div class="analytics-section-heading">
+            <div>
+                <span class="analytics-kicker">Query 03 · Database View</span>
+                <h2>Customer Bookings</h2>
+                <p class="analytics-section-description">
+                    Customer, movie, show and booking details combined into one view.
+                </p>
+            </div>
+            <span class="analytics-count">{{ bookings|length }} records</span>
+        </div>
+
+        <div class="analytics-panel">
+            <div class="analytics-panel-header">
+                <div>
+                    <div class="analytics-panel-title">Booking Register</div>
+                    <div class="analytics-panel-subtitle">
+                        Source: vw_booking_details
+                    </div>
+                </div>
+                <input class="analytics-search"
+                       type="search"
+                       placeholder="Search bookings..."
+                       data-table-search="booking-table">
+            </div>
+
+            <div class="analytics-table-wrap">
+                <table class="analytics-table" id="booking-table">
+                    <thead>
+                        <tr>
+                            <th>Booking</th>
+                            <th>Customer</th>
+                            <th>Movie</th>
+                            <th>Show Date</th>
+                            <th>Booking Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>
+                                <span class="analytics-id">#{{ booking.booking_id }}</span>
+                            </td>
+                            <td>
+                                <div class="analytics-primary-cell">
+                                    {{ booking.customer_name }}
+                                </div>
+                                <div class="analytics-secondary-cell">
+                                    {{ booking.email }}
+                                </div>
+                            </td>
+                            <td>{{ booking.movie_title }}</td>
+                            <td>{{ booking.show_date }}</td>
+                            <td class="analytics-money">
+                                ₹{{ "%.2f"|format(booking.total_amount|float) }}
+                            </td>
+                            <td>
+                                <span class="analytics-status {{ (booking.status|string|lower|replace(' ', '-')) }}">
+                                    {{ booking.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="analytics-empty">
+                                    <span class="analytics-empty-icon">▤</span>
+                                    <strong>No bookings available</strong>
+                                    <p>Bookings will appear here when the view returns records.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="analytics-table-footer">
+                Source: vw_booking_details
+            </div>
+        </div>
+    </section>
+
+    <!-- PAYMENT SUMMARY -->
+    <section class="analytics-section">
+
+        <div class="analytics-section-heading">
+            <div>
+                <span class="analytics-kicker">Query 04 · Stored Procedure</span>
+                <h2>Payment Intelligence</h2>
+                <p class="analytics-section-description">
+                    Recorded payment amounts grouped by payment status.
+                </p>
+            </div>
+            <span class="analytics-count">{{ payment_stats|length }} statuses</span>
+        </div>
+
+        <div class="analytics-panel">
+            <div class="analytics-panel-header">
+                <div>
+                    <div class="analytics-panel-title">Payment Status Overview</div>
+                    <div class="analytics-panel-subtitle">
+                        Source: sp_payment_summary()
+                    </div>
+                </div>
+            </div>
+
+            <div class="analytics-payment-grid">
+                {% for payment in payment_stats %}
+                <article class="analytics-payment-card">
+                    <div class="analytics-payment-symbol">₹</div>
+                    <h3>{{ payment.payment_status }}</h3>
+                    <span class="analytics-payment-amount">
+                        ₹{{ "%.2f"|format(payment.total_amount|float) }}
+                    </span>
+                    <p>{{ payment.payment_count }} payment record(s)</p>
+                </article>
+                {% else %}
+                <div class="analytics-empty">
+                    <span class="analytics-empty-icon">₹</span>
+                    <strong>No payment summary available</strong>
+                    <p>The procedure returned no payment summary records.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- PAYMENT DETAILS -->
+    <section class="analytics-section">
+
+        <div class="analytics-section-heading">
+            <div>
+                <span class="analytics-kicker">Query 05 · Joined View</span>
+                <h2>Payment Records</h2>
+                <p class="analytics-section-description">
+                    Payment details linked to bookings and customers.
+                </p>
+            </div>
+            <span class="analytics-count">{{ payments|length }} records</span>
+        </div>
+
+        <div class="analytics-panel">
+            <div class="analytics-panel-header">
+                <div>
+                    <div class="analytics-panel-title">Transaction Register</div>
+                    <div class="analytics-panel-subtitle">
+                        Source: vw_payment_summary
+                    </div>
+                </div>
+                <input class="analytics-search"
+                       type="search"
+                       placeholder="Search payments..."
+                       data-table-search="payment-table">
+            </div>
+
+            <div class="analytics-table-wrap">
+                <table class="analytics-table" id="payment-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Booking</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td>
+                                <span class="analytics-id">#{{ payment.payment_id }}</span>
+                            </td>
+                            <td>#{{ payment.booking_id }}</td>
+                            <td class="analytics-primary-cell">
+                                {{ payment.customer_name }}
+                            </td>
+                            <td class="analytics-money">
+                                ₹{{ "%.2f"|format(payment.amount|float) }}
+                            </td>
+                            <td>{{ payment.payment_method }}</td>
+                            <td>
+                                <span class="analytics-status {{ (payment.payment_status|string|lower|replace(' ', '-')) }}">
+                                    {{ payment.payment_status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="analytics-empty">
+                                    <span class="analytics-empty-icon">◇</span>
+                                    <strong>No payment records found</strong>
+                                    <p>The payment view currently returned no records.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="analytics-table-footer">
+                Source: vw_payment_summary
+            </div>
+        </div>
+    </section>
+
+    <!-- STORED FUNCTION -->
+    <section class="analytics-section">
+
+        <div class="analytics-section-heading">
+            <div>
+                <span class="analytics-kicker">Query 06 · Stored Function</span>
+                <h2>Seat-Price Breakdown</h2>
+                <p class="analytics-section-description">
+                    Seat-price subtotals calculated for each booking.
+                </p>
+            </div>
+            <span class="analytics-count">{{ seat_totals|length }} records</span>
+        </div>
+
+        <div class="analytics-panel">
+            <div class="analytics-panel-header">
+                <div>
+                    <div class="analytics-panel-title">Booking Subtotal Report</div>
+                    <div class="analytics-panel-subtitle">
+                        Source: fn_booking_seat_total(booking_id)
+                    </div>
+                </div>
+                <input class="analytics-search"
+                       type="search"
+                       placeholder="Search customers..."
+                       data-table-search="seat-table">
+            </div>
+
+            <div class="analytics-table-wrap">
+                <table class="analytics-table" id="seat-table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Customer</th>
+                            <th>Seat-Price Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in seat_totals %}
+                        <tr>
+                            <td>
+                                <span class="analytics-id">#{{ item.booking_id }}</span>
+                            </td>
+                            <td class="analytics-primary-cell">
+                                {{ item.customer_name }}
+                            </td>
+                            <td class="analytics-money">
+                                ₹{{ "%.2f"|format(item.seat_total|float) }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3">
+                                <div class="analytics-empty">
+                                    <span class="analytics-empty-icon">⌗</span>
+                                    <strong>No booking subtotals available</strong>
+                                    <p>The function results will appear here when bookings exist.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="analytics-table-footer">
+                Seat-price subtotal is calculated from booking_details and may differ from the full booking amount.
+            </div>
+        </div>
+    </section>
+
+    <footer class="analytics-footer">
+        <div><strong>CineBook</strong> &nbsp; Analytics Studio</div>
+        <div class="analytics-footer-status">
+            <span class="analytics-dot"></span>
+            Database analytics
+        </div>
+        <div>© 2026 CineBook · Phase 3</div>
+    </footer>
+
+</main>
+
+<script>
+    document.querySelectorAll("[data-table-search]").forEach(function (input) {
+        input.addEventListener("input", function () {
+            const table = document.getElementById(input.dataset.tableSearch);
+            if (!table) return;
+
+            const query = input.value.trim().toLowerCase();
+
+            table.querySelectorAll("tbody tr").forEach(function (row) {
+                row.style.display =
+                    row.textContent.toLowerCase().includes(query) ? "" : "none";
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

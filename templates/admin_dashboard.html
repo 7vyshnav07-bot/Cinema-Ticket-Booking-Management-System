@@ -1,0 +1,1916 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+    <title>CineBook | Admin Dashboard</title>
+
+
+
+    <link rel="stylesheet"
+
+          href="{{ url_for('static', filename='style.css') }}">
+
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+
+          rel="stylesheet">
+
+
+
+    <style>
+
+        /* =========================================
+
+           CINEBOOK ADMIN DASHBOARD
+
+           Cyan / Blue / Purple Design System
+
+        ========================================= */
+
+
+
+        .dashboard-body {
+
+            --cb-bg: #070B1A;
+
+            --cb-panel: #10162D;
+
+            --cb-panel-hover: #151D3A;
+
+            --cb-border: rgba(139, 92, 246, .23);
+
+            --cb-text: #F1F5FF;
+
+            --cb-muted: #929FBE;
+
+            --cb-cyan: #22D3EE;
+
+            --cb-blue: #3B82F6;
+
+            --cb-purple: #8B5CF6;
+
+
+
+            min-height: 100vh;
+
+            margin: 0;
+
+            color: var(--cb-text);
+
+            font-family: 'Inter', sans-serif;
+
+
+
+            background:
+
+                radial-gradient(
+
+                    ellipse at 8% 0%,
+
+                    rgba(59, 130, 246, .11),
+
+                    transparent 35%
+
+                ),
+
+                radial-gradient(
+
+                    ellipse at 95% 10%,
+
+                    rgba(139, 92, 246, .11),
+
+                    transparent 32%
+
+                ),
+
+                var(--cb-bg);
+
+        }
+
+
+
+        .dashboard-body *,
+
+        .dashboard-body *::before,
+
+        .dashboard-body *::after {
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        .dashboard-body a {
+
+            text-decoration: none;
+
+        }
+
+
+
+        /* =========================================
+
+           TOP NAVIGATION
+
+        ========================================= */
+
+
+
+        .dashboard-body .navbar {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            width: 100%;
+
+            min-height: 76px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 25px;
+
+            padding: 12px 5%;
+
+
+
+            background: rgba(7, 11, 26, .91);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+
+
+
+            border-bottom: 1px solid rgba(139, 92, 246, .20);
+
+        }
+
+
+
+        .dashboard-body .logo {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            flex-shrink: 0;
+
+            color: var(--cb-text);
+
+        }
+
+
+
+        .dashboard-body .logo-mark {
+
+            display: grid;
+
+            place-items: center;
+
+            width: 41px;
+
+            height: 41px;
+
+            flex-shrink: 0;
+
+
+
+            border-radius: 12px;
+
+            background: linear-gradient(
+
+                135deg,
+
+                var(--cb-cyan),
+
+                var(--cb-blue)
+
+            );
+
+            color: #07111E;
+
+            font-size: 23px;
+
+            font-weight: 800;
+
+
+
+            box-shadow: 0 0 23px rgba(34, 211, 238, .15);
+
+        }
+
+
+
+        .dashboard-body .logo-text {
+
+            font-size: 21px;
+
+            font-weight: 800;
+
+            letter-spacing: -.8px;
+
+        }
+
+
+
+        .dashboard-body .logo-text span {
+
+            color: var(--cb-cyan);
+
+        }
+
+
+
+        .dashboard-body .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+        }
+
+
+
+        .dashboard-body .nav-links a {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 11px 14px;
+
+
+
+            border: 1px solid transparent;
+
+            border-radius: 10px;
+
+            color: var(--cb-muted);
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+
+
+
+            transition: .2s ease;
+
+        }
+
+
+
+        .dashboard-body .nav-links a:hover {
+
+            color: var(--cb-text);
+
+            background: rgba(139, 92, 246, .07);
+
+        }
+
+
+
+        .dashboard-body .nav-links a.active {
+
+            color: var(--cb-cyan);
+
+            border-color: rgba(34, 211, 238, .14);
+
+            background: rgba(34, 211, 238, .07);
+
+        }
+
+
+
+        .dashboard-body .user-area {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            flex-shrink: 0;
+
+        }
+
+
+
+        .dashboard-body .user-details strong {
+
+            display: block;
+
+            color: var(--cb-text);
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+
+        .dashboard-body .user-details small {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color: var(--cb-muted);
+
+            font-size: 10px;
+
+        }
+
+
+
+        .dashboard-body .logout {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 10px 13px;
+
+
+
+            border: 1px solid rgba(139, 92, 246, .22);
+
+            border-radius: 10px;
+
+            color: #D4DDF5;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+
+
+
+            transition: .2s ease;
+
+        }
+
+
+
+        .dashboard-body .logout:hover {
+
+            color: var(--cb-cyan);
+
+            border-color: var(--cb-cyan);
+
+            background: rgba(34, 211, 238, .05);
+
+        }
+
+
+
+        /* =========================================
+
+           MAIN CONTAINER
+
+        ========================================= */
+
+
+
+        .dashboard-body .dashboard-container {
+
+            width: min(1450px, 92%);
+
+            margin: 0 auto;
+
+            padding: 36px 0 65px;
+
+        }
+
+
+
+        /* =========================================
+
+           DASHBOARD HERO
+
+        ========================================= */
+
+
+
+        .dashboard-body .dashboard-hero {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 39px;
+
+            margin-bottom: 36px;
+
+
+
+            border: 1px solid rgba(139, 92, 246, .27);
+
+            border-radius: 24px;
+
+
+
+            background:
+
+                radial-gradient(
+
+                    ellipse at 90% 10%,
+
+                    rgba(139, 92, 246, .21),
+
+                    transparent 35%
+
+                ),
+
+                radial-gradient(
+
+                    ellipse at 5% 100%,
+
+                    rgba(34, 211, 238, .10),
+
+                    transparent 38%
+
+                ),
+
+                linear-gradient(120deg, #111936, #0B1025 78%);
+
+        }
+
+
+
+        .dashboard-body .dashboard-hero::after {
+
+            content: "C";
+
+            position: absolute;
+
+            top: -85px;
+
+            right: 6%;
+
+
+
+            color: rgba(139, 92, 246, .055);
+
+            font-size: 310px;
+
+            line-height: 1;
+
+            font-weight: 800;
+
+
+
+            pointer-events: none;
+
+        }
+
+
+
+        .dashboard-body .hero-content {
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+
+
+        .dashboard-body .hero-label {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            margin-bottom: 18px;
+
+
+
+            color: var(--cb-cyan);
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.8px;
+
+        }
+
+
+
+        .dashboard-body .live-dot {
+
+            display: inline-block;
+
+            width: 7px;
+
+            height: 7px;
+
+            flex-shrink: 0;
+
+
+
+            border-radius: 50%;
+
+            background: var(--cb-cyan);
+
+            box-shadow: 0 0 12px rgba(34, 211, 238, .6);
+
+        }
+
+
+
+        .dashboard-body .hero-content h1 {
+
+            margin: 0;
+
+            color: var(--cb-text);
+
+            font-size: clamp(32px, 4.5vw, 48px);
+
+            font-weight: 800;
+
+            letter-spacing: -1.8px;
+
+            line-height: 1.15;
+
+        }
+
+
+
+        .dashboard-body .hero-content h1 span {
+
+            color: var(--cb-cyan);
+
+        }
+
+
+
+        .dashboard-body .hero-content p {
+
+            max-width: 650px;
+
+            margin: 16px 0 0;
+
+
+
+            color: #AAB5D1;
+
+            font-size: 13px;
+
+            line-height: 1.9;
+
+        }
+
+
+
+        .dashboard-body .hero-features {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 9px;
+
+            margin-top: 25px;
+
+        }
+
+
+
+        .dashboard-body .hero-feature {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 9px 12px;
+
+
+
+            border: 1px solid rgba(139, 92, 246, .20);
+
+            border-radius: 9px;
+
+            background: rgba(139, 92, 246, .06);
+
+
+
+            color: #C9D3EF;
+
+            font-size: 10px;
+
+            font-weight: 500;
+
+        }
+
+
+
+        .dashboard-body .hero-feature span {
+
+            color: var(--cb-cyan);
+
+        }
+
+
+
+        /* =========================================
+
+           SECTION HEADER
+
+        ========================================= */
+
+
+
+        .dashboard-body .content-section {
+
+            margin-top: 34px;
+
+        }
+
+
+
+        .dashboard-body .section-heading {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-end;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+
+        .dashboard-body .section-heading > div > span {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+
+
+            color: var(--cb-cyan);
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.7px;
+
+        }
+
+
+
+        .dashboard-body .section-heading h2 {
+
+            margin: 0;
+
+            color: var(--cb-text);
+
+            font-size: 24px;
+
+            font-weight: 700;
+
+            letter-spacing: -.7px;
+
+        }
+
+
+
+        .dashboard-body .section-heading p {
+
+            margin: 8px 0 0;
+
+            color: var(--cb-muted);
+
+            font-size: 12px;
+
+            line-height: 1.7;
+
+        }
+
+
+
+        .dashboard-body .management-count {
+
+            padding: 8px 11px;
+
+            border: 1px solid var(--cb-border);
+
+            border-radius: 9px;
+
+            background: rgba(139, 92, 246, .06);
+
+            color: #D1C4FF;
+
+            font-size: 11px;
+
+        }
+
+
+
+        /* =========================================
+
+           MANAGEMENT CARDS
+
+        ========================================= */
+
+
+
+        .dashboard-body .action-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+
+            gap: 18px;
+
+        }
+
+
+
+        .dashboard-body .cinema-card {
+
+            position: relative;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            min-width: 0;
+
+            min-height: 275px;
+
+            overflow: hidden;
+
+            padding: 25px;
+
+
+
+            border: 1px solid rgba(139, 92, 246, .20);
+
+            border-radius: 18px;
+
+
+
+            background:
+
+                linear-gradient(
+
+                    145deg,
+
+                    rgba(18, 26, 52, .97),
+
+                    rgba(11, 17, 37, .97)
+
+                );
+
+
+
+            transition:
+
+                transform .22s ease,
+
+                border-color .22s ease,
+
+                box-shadow .22s ease;
+
+        }
+
+
+
+        .dashboard-body .cinema-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 2px;
+
+
+
+            background: linear-gradient(
+
+                90deg,
+
+                var(--cb-cyan),
+
+                var(--cb-blue),
+
+                var(--cb-purple)
+
+            );
+
+
+
+            opacity: 0;
+
+            transition: opacity .22s ease;
+
+        }
+
+
+
+        .dashboard-body .cinema-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 100px;
+
+            height: 100px;
+
+            right: -48px;
+
+            bottom: -48px;
+
+
+
+            border-radius: 50%;
+
+            background: rgba(139, 92, 246, .08);
+
+            filter: blur(12px);
+
+
+
+            pointer-events: none;
+
+        }
+
+
+
+        .dashboard-body .cinema-card:hover {
+
+            transform: translateY(-5px);
+
+            border-color: rgba(34, 211, 238, .37);
+
+            background: linear-gradient(
+
+                145deg,
+
+                rgba(21, 32, 64, .98),
+
+                rgba(12, 20, 43, .98)
+
+            );
+
+            box-shadow: 0 15px 38px rgba(0, 0, 0, .17);
+
+        }
+
+
+
+        .dashboard-body .cinema-card:hover::before {
+
+            opacity: 1;
+
+        }
+
+
+
+        .dashboard-body .card-number {
+
+            position: absolute;
+
+            top: 19px;
+
+            right: 20px;
+
+
+
+            color: rgba(167, 181, 220, .34);
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+        }
+
+
+
+        .dashboard-body .card-icon {
+
+            display: grid;
+
+            place-items: center;
+
+            width: 51px;
+
+            height: 51px;
+
+            margin-bottom: 22px;
+
+
+
+            border: 1px solid rgba(34, 211, 238, .18);
+
+            border-radius: 15px;
+
+
+
+            background: linear-gradient(
+
+                135deg,
+
+                rgba(34, 211, 238, .10),
+
+                rgba(139, 92, 246, .12)
+
+            );
+
+
+
+            font-size: 23px;
+
+            transition: transform .22s ease;
+
+        }
+
+
+
+        .dashboard-body .cinema-card:hover .card-icon {
+
+            transform: scale(1.06);
+
+        }
+
+
+
+        .dashboard-body .cinema-card h3 {
+
+            margin: 0 0 11px;
+
+            color: var(--cb-text);
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            letter-spacing: -.3px;
+
+        }
+
+
+
+        .dashboard-body .cinema-card p {
+
+            flex: 1;
+
+            margin: 0 0 23px;
+
+
+
+            color: var(--cb-muted);
+
+            font-size: 12px;
+
+            line-height: 1.8;
+
+        }
+
+
+
+        /* Card links */
+
+
+
+        .dashboard-body .gold-button,
+
+        .dashboard-body .card-link {
+
+            position: relative;
+
+            z-index: 1;
+
+
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+
+
+            min-height: 40px;
+
+            padding: 10px 13px;
+
+
+
+            border: 1px solid rgba(34, 211, 238, .20);
+
+            border-radius: 9px;
+
+
+
+            background: rgba(34, 211, 238, .06);
+
+            color: var(--cb-cyan);
+
+
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+
+
+            transition: .2s ease;
+
+        }
+
+
+
+        .dashboard-body .gold-button:hover,
+
+        .dashboard-body .card-link:hover {
+
+            border-color: var(--cb-cyan);
+
+            background: rgba(34, 211, 238, .13);
+
+            box-shadow: 0 0 18px rgba(34, 211, 238, .06);
+
+            transform: translateY(-1px);
+
+        }
+
+
+
+        /* Analytics card accent */
+
+
+
+        .dashboard-body .analytics-card {
+
+            border-color: rgba(34, 211, 238, .28);
+
+            background:
+
+                radial-gradient(
+
+                    ellipse at 100% 0%,
+
+                    rgba(34, 211, 238, .08),
+
+                    transparent 45%
+
+                ),
+
+                linear-gradient(
+
+                    145deg,
+
+                    rgba(16, 34, 61, .98),
+
+                    rgba(11, 17, 37, .98)
+
+                );
+
+        }
+
+
+
+        .dashboard-body .analytics-card .card-icon {
+
+            border-color: rgba(34, 211, 238, .28);
+
+            background: rgba(34, 211, 238, .10);
+
+        }
+
+
+
+        .dashboard-body .analytics-card .card-link {
+
+            border-color: rgba(139, 92, 246, .35);
+
+            background: rgba(139, 92, 246, .10);
+
+            color: #C4B5FD;
+
+        }
+
+
+
+        .dashboard-body .analytics-card .card-link:hover {
+
+            border-color: var(--cb-cyan);
+
+            background: rgba(34, 211, 238, .10);
+
+            color: var(--cb-cyan);
+
+        }
+
+
+
+        /* =========================================
+
+           FOOTER
+
+        ========================================= */
+
+
+
+        .dashboard-body .dashboard-footer {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            flex-wrap: wrap;
+
+            gap: 16px;
+
+
+
+            padding: 24px 5%;
+
+            border-top: 1px solid rgba(139, 92, 246, .18);
+
+            background: rgba(7, 11, 26, .6);
+
+
+
+            color: var(--cb-muted);
+
+            font-size: 11px;
+
+        }
+
+
+
+        .dashboard-body .footer-logo {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            color: var(--cb-text);
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+        }
+
+
+
+        .dashboard-body .footer-logo .logo-mark {
+
+            width: 30px;
+
+            height: 30px;
+
+            font-size: 17px;
+
+            border-radius: 9px;
+
+        }
+
+
+
+        .dashboard-body .dashboard-footer p {
+
+            margin: 0;
+
+        }
+
+
+
+        /* =========================================
+
+           RESPONSIVE DESIGN
+
+        ========================================= */
+
+
+
+        @media (max-width: 1100px) {
+
+            .dashboard-body .navbar {
+
+                padding-left: 3%;
+
+                padding-right: 3%;
+
+                gap: 15px;
+
+            }
+
+
+
+            .dashboard-body .nav-links a {
+
+                padding: 10px;
+
+            }
+
+
+
+            .dashboard-body .action-grid {
+
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+
+            }
+
+
+
+            .dashboard-body .user-details {
+
+                display: none;
+
+            }
+
+        }
+
+
+
+        @media (max-width: 700px) {
+
+            .dashboard-body .navbar {
+
+                position: relative;
+
+                flex-wrap: wrap;
+
+                padding: 14px 4%;
+
+                gap: 13px;
+
+            }
+
+
+
+            .dashboard-body .logo-text {
+
+                font-size: 19px;
+
+            }
+
+
+
+            .dashboard-body .nav-links {
+
+                order: 3;
+
+                width: 100%;
+
+                overflow-x: auto;
+
+                padding-bottom: 2px;
+
+            }
+
+
+
+            .dashboard-body .nav-links a {
+
+                flex-shrink: 0;
+
+            }
+
+
+
+            .dashboard-body .user-area {
+
+                margin-left: auto;
+
+            }
+
+
+
+            .dashboard-body .dashboard-container {
+
+                width: 92%;
+
+                padding-top: 25px;
+
+            }
+
+
+
+            .dashboard-body .dashboard-hero {
+
+                padding: 27px 22px;
+
+                margin-bottom: 28px;
+
+            }
+
+
+
+            .dashboard-body .dashboard-hero::after {
+
+                right: -20px;
+
+                top: -30px;
+
+                font-size: 200px;
+
+            }
+
+
+
+            .dashboard-body .hero-content h1 {
+
+                font-size: 34px;
+
+                letter-spacing: -1px;
+
+            }
+
+
+
+            .dashboard-body .hero-content p {
+
+                font-size: 12px;
+
+            }
+
+
+
+            .dashboard-body .section-heading h2 {
+
+                font-size: 21px;
+
+            }
+
+
+
+            .dashboard-body .action-grid {
+
+                grid-template-columns: 1fr;
+
+                gap: 14px;
+
+            }
+
+
+
+            .dashboard-body .cinema-card {
+
+                min-height: 245px;
+
+                padding: 22px;
+
+            }
+
+
+
+            .dashboard-body .dashboard-footer {
+
+                justify-content: center;
+
+                text-align: center;
+
+            }
+
+        }
+
+
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .dashboard-body *,
+
+            .dashboard-body *::before,
+
+            .dashboard-body *::after {
+
+                transition: none !important;
+
+            }
+
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-navbar.css') }}">
+</head>
+
+
+
+<body class="dashboard-body">
+
+
+
+    <!-- NAVBAR -->
+
+    {% include 'admin_navbar.html' %}
+
+
+
+    <!-- MAIN -->
+
+    <main class="dashboard-container">
+
+
+
+        <!-- HERO -->
+
+        <section class="dashboard-hero">
+
+
+
+            <div class="hero-content">
+
+
+
+                <div class="hero-label">
+
+                    <span class="live-dot"></span>
+
+                    CINEBOOK ADMIN WORKSPACE
+
+                </div>
+
+
+
+                <h1>
+
+                    Manage <span>CineBook.</span>
+
+                </h1>
+
+
+
+                <p>
+
+                    Your central workspace for managing movies, users,
+
+                    theatres, screens, seats, shows, bookings and payments.
+
+                    Everything your cinema operation needs, in one place.
+
+                </p>
+
+
+
+                <div class="hero-features">
+
+                    <span class="hero-feature">
+
+                        <span>✦</span> Movie Management
+
+                    </span>
+
+
+
+                    <span class="hero-feature">
+
+                        <span>✦</span> Booking Operations
+
+                    </span>
+
+
+
+                    <span class="hero-feature">
+
+                        <span>✦</span> Database Analytics
+
+                    </span>
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </section>
+
+
+
+        <!-- MANAGEMENT -->
+
+        <section class="content-section">
+
+
+
+            <div class="section-heading">
+
+
+
+                <div>
+
+                    <span>ADMINISTRATION</span>
+
+                    <h2>Management Centre</h2>
+
+
+
+                    <p>
+
+                        Select a module to manage your CineBook data.
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="management-count">
+
+                    07 Management Modules
+
+                </div>
+
+
+
+            </div>
+
+
+
+            <div class="action-grid">
+
+
+
+                <!-- 01 MOVIES -->
+
+                <article class="cinema-card">
+
+
+
+                    <div class="card-number">01</div>
+
+                    <div class="card-icon">🎬</div>
+
+
+
+                    <h3>Manage Movies</h3>
+
+
+
+                    <p>
+
+                        Add, view and delete movies from the CineBook database.
+
+                        Maintain your movie catalogue.
+
+                    </p>
+
+
+
+                    <a href="{{ url_for('admin_movies') }}"
+
+                       class="gold-button">
+
+                        Manage Movies <span>→</span>
+
+                    </a>
+
+
+
+                </article>
+
+
+
+                <!-- 02 USERS -->
+
+                <article class="cinema-card">
+
+
+
+                    <div class="card-number">02</div>
+
+                    <div class="card-icon">👤</div>
+
+
+
+                    <h3>Manage Users</h3>
+
+
+
+                    <p>
+
+                        View, edit and delete registered CineBook customers
+
+                        and manage user information.
+
+                    </p>
+
+
+
+                    <a href="{{ url_for('users') }}"
+
+                       class="gold-button">
+
+                        Manage Users <span>→</span>
+
+                    </a>
+
+
+
+                </article>
+
+
+
+                <!-- 03 THEATRES -->
+
+                <article class="cinema-card">
+
+
+
+                    <div class="card-number">03</div>
+
+                    <div class="card-icon">🏢</div>
+
+
+
+                    <h3>Manage Theatres</h3>
+
+
+
+                    <p>
+
+                        Add, update and remove theatres, including their
+
+                        locations and city information.
+
+                    </p>
+
+
+
+                    <a href="{{ url_for('admin_theatres') }}"
+
+                       class="gold-button">
+
+                        Manage Theatres <span>→</span>
+
+                    </a>
+
+
+
+                </article>
+
+
+
+                <!-- 04 SCREENS -->
+
+                <article class="cinema-card">
+
+
+
+                    <div class="card-number">04</div>
+
+                    <div class="card-icon">📺</div>
+
+
+
+                    <h3>Manage Screens</h3>
+
+
+
+                    <p>
+
+                        Add and manage cinema screens within each theatre
+
+                        and maintain screen information.
+
+                    </p>
+
+
+
+                    <a href="{{ url_for('admin_screens') }}"
+
+                       class="gold-button">
+
+                        Manage Screens <span>→</span>
+
+                    </a>
+
+
+
+                </article>
+
+
+
+                <!-- 05 SEATS -->
+
+                <article class="cinema-card">
+
+
+
+                    <div class="card-number">05</div>
+
+                    <div class="card-icon">💺</div>
+
+
+
+                    <h3>Manage Seats</h3>
+
+
+
+                    <p>
+
+                        Configure seats for each screen and maintain
+
+                        seat numbers, rows and seat types.
+
+                    </p>
+
+
+
+                    <a href="{{ url_for('admin_seats') }}"
+
+                       class="gold-button">
+
+                        Manage Seats <span>→</span>
+
+                    </a>
+
+
+
+                </article>
+
+
+
+                <!-- 06 SHOWS -->
+
+                <article class="cinema-card">
+
+
+
+                    <div class="card-number">06</div>
+
+                    <div class="card-icon">🎟️</div>
+
+
+
+                    <h3>Manage Shows</h3>
+
+
+
+                    <p>
+
+                        Schedule movies with show dates, timings and
+
+                        ticket prices across your theatres.
+
+                    </p>
+
+
+
+                    <a href="{{ url_for('admin_shows') }}"
+
+                       class="gold-button">
+
+                        Manage Shows <span>→</span>
+
+                    </a>
+
+
+
+                </article>
+
+
+
+                <!-- 09 ANALYTICS -->
+
+                <article class="cinema-card analytics-card">
+
+
+
+                    <div class="card-number">09</div>
+
+                    <div class="card-icon">📊</div>
+
+
+
+                    <h3>Data Analytics</h3>
+
+
+
+                    <p>
+
+                        Explore booking trends, movie performance,
+
+                        payment summaries and database analytics
+
+                        powered by SQL queries.
+
+                    </p>
+
+
+
+                    <a href="{{ url_for('admin_analytics') }}"
+
+                       class="card-link">
+
+                        Open Analytics <span>→</span>
+
+                    </a>
+
+
+
+                </article>
+
+
+
+            </div>
+
+
+
+        </section>
+
+
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="dashboard-footer">
+
+
+
+        <div class="footer-logo">
+
+            <span class="logo-mark">C</span>
+
+            CineBook
+
+        </div>
+
+
+
+        <p>Admin Management System</p>
+
+
+
+        <span>© 2026 CineBook</span>
+
+
+
+    </footer>
+
+
+
+</body>
+
+</html>

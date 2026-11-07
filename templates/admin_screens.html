@@ -1,0 +1,387 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.screen-page {
+    width: min(1450px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 38px 0 64px;
+    color: #F1F5FF;
+}
+.screen-page * { box-sizing: border-box; }
+
+.screen-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+.screen-eyebrow {
+    color: #22D3EE;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.screen-page h1 {
+    margin: 8px 0;
+    font-size: clamp(28px, 3vw, 38px);
+    letter-spacing: -1px;
+}
+.screen-subtitle, .screen-muted {
+    color: #929FBE;
+    font-size: 13px;
+}
+.screen-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+.screen-stat, .screen-panel {
+    border: 1px solid rgba(139, 92, 246, .24);
+    border-radius: 18px;
+    background: linear-gradient(145deg, #10162D, #0B1023);
+    box-shadow: 0 14px 35px rgba(0,0,0,.16);
+}
+.screen-stat { padding: 22px; }
+.screen-stat span {
+    display: block;
+    color: #929FBE;
+    font-size: 12px;
+}
+.screen-stat strong {
+    display: block;
+    margin-top: 7px;
+    color: #F1F5FF;
+    font-size: 28px;
+}
+.screen-layout {
+    display: grid;
+    grid-template-columns: minmax(270px, .75fr) minmax(0, 1.8fr);
+    gap: 22px;
+    align-items: start;
+}
+.screen-panel { padding: 24px; min-width: 0; }
+.screen-panel h2 { margin: 0 0 7px; font-size: 18px; }
+.screen-panel .screen-muted { margin: 0 0 22px; }
+
+.screen-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 17px;
+}
+.screen-field label {
+    color: #C9D3E9;
+    font-size: 12px;
+    font-weight: 700;
+}
+.screen-field input, .screen-field select, .screen-search {
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 12px;
+    border: 1px solid rgba(148,163,216,.2);
+    border-radius: 10px;
+    outline: none;
+    color: #F1F5FF;
+    background: #090F22;
+}
+.screen-field input:focus,
+.screen-field select:focus,
+.screen-search:focus {
+    border-color: #22D3EE;
+    box-shadow: 0 0 0 3px rgba(34,211,238,.08);
+}
+.screen-field option { background: #10162D; }
+
+.screen-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 39px;
+    padding: 9px 14px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+.screen-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.screen-btn-primary {
+    color: #06101D;
+    background: linear-gradient(110deg, #22D3EE, #3B82F6);
+}
+.screen-btn-secondary {
+    color: #D9E2F7;
+    border-color: rgba(148,163,216,.2);
+    background: rgba(148,163,216,.06);
+}
+.screen-btn-danger {
+    color: #FDA4AF;
+    border-color: rgba(251,113,133,.25);
+    background: rgba(251,113,133,.07);
+}
+.screen-flash {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border: 1px solid rgba(139,92,246,.25);
+    border-radius: 10px;
+    color: #DCE6FA;
+    background: #10162D;
+    font-size: 13px;
+}
+.screen-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 17px;
+}
+.screen-search { width: min(280px, 100%); min-height: 40px; }
+.screen-table-wrap {
+    overflow-x: auto;
+    border: 1px solid rgba(148,163,216,.12);
+    border-radius: 12px;
+}
+.screen-page table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+    text-align: left;
+}
+.screen-page th {
+    padding: 14px;
+    color: #9EABC9;
+    background: rgba(34,211,238,.055);
+    border-bottom: 1px solid rgba(139,92,246,.2);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.screen-page td {
+    padding: 14px;
+    color: #C9D3E9;
+    border-bottom: 1px solid rgba(148,163,216,.09);
+    font-size: 12px;
+    vertical-align: middle;
+}
+.screen-page tbody tr:hover { background: rgba(34,211,238,.035); }
+.screen-page tbody tr:last-child td { border-bottom: 0; }
+.screen-id { color: #22D3EE; font-weight: 800; }
+.screen-type {
+    display: inline-block;
+    padding: 5px 9px;
+    border: 1px solid rgba(139,92,246,.25);
+    border-radius: 999px;
+    color: #C4B5FD;
+    background: rgba(139,92,246,.08);
+    font-size: 10px;
+}
+.screen-actions { display: flex; gap: 7px; align-items: center; }
+.screen-actions form { margin: 0; }
+.screen-actions .screen-btn { min-height: 31px; padding: 6px 9px; }
+.screen-empty { padding: 32px 12px; color: #929FBE; text-align: center; }
+.screen-empty strong { display: block; margin-bottom: 5px; color: #F1F5FF; }
+
+@media(max-width: 1000px) {
+    .screen-layout { grid-template-columns: 1fr; }
+}
+@media(max-width: 650px) {
+    .screen-page { width: calc(100% - 28px); padding-top: 24px; }
+    .screen-heading { align-items: flex-start; flex-direction: column; }
+    .screen-stats { grid-template-columns: 1fr; }
+    .screen-panel { padding: 17px; }
+    .screen-toolbar { align-items: stretch; flex-direction: column; }
+    .screen-search { width: 100%; }
+}
+</style>
+
+<div class="screen-page">
+
+    <header class="screen-heading">
+        <div>
+            <div class="screen-eyebrow">Admin Panel / Infrastructure</div>
+            <h1>Manage Screens</h1>
+            <p class="screen-subtitle">
+                Configure cinema screens and their seating capacity.
+            </p>
+        </div>
+        <a class="screen-btn screen-btn-secondary"
+           href="{{ url_for('admin_dashboard') }}">
+            ← Back to Dashboard
+        </a>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="screen-flash">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="screen-stats">
+        <div class="screen-stat">
+            <span>Total Screens</span>
+            <strong>{{ screens|length }}</strong>
+        </div>
+        <div class="screen-stat">
+            <span>Theatres Available</span>
+            <strong>{{ theatres|length }}</strong>
+        </div>
+        <div class="screen-stat">
+            <span>Total Seating Capacity</span>
+            <strong>{{ screens|sum(attribute='total_seats') }}</strong>
+        </div>
+    </section>
+
+    <div class="screen-layout">
+
+        <!-- ADD SCREEN FORM -->
+        <section class="screen-panel">
+            <h2>＋ Add New Screen</h2>
+            <p class="screen-muted">Assign a screen to a theatre.</p>
+
+            {% if not theatres %}
+                <div class="screen-flash">
+                    Add a theatre before creating a screen.
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('admin_screens') }}">
+
+                <div class="screen-field">
+                    <label for="theatre_id">Theatre *</label>
+                    <select id="theatre_id" name="theatre_id" required>
+                        <option value="">Select a theatre</option>
+                        {% for theatre in theatres %}
+                            <option value="{{ theatre.theatre_id }}">
+                                {{ theatre.name }}{% if theatre.city %} — {{ theatre.city }}{% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="screen-field">
+                    <label for="screen_name">Screen Name *</label>
+                    <input id="screen_name" name="screen_name"
+                           maxlength="60" placeholder="e.g. Screen 1" required>
+                </div>
+
+                <div class="screen-field">
+                    <label for="screen_type">Screen Type</label>
+                    <select id="screen_type" name="screen_type">
+                        <option value="">Select screen type</option>
+                        <option value="Standard">Standard</option>
+                        <option value="IMAX">IMAX</option>
+                        <option value="4DX">4DX</option>
+                        <option value="Dolby Atmos">Dolby Atmos</option>
+                        <option value="3D">3D</option>
+                        <option value="Premium">Premium</option>
+                    </select>
+                </div>
+
+                <div class="screen-field">
+                    <label for="total_seats">Total Seats *</label>
+                    <input id="total_seats" name="total_seats"
+                           type="number" min="1" max="1000"
+                           placeholder="e.g. 150" required>
+                </div>
+
+                <button class="screen-btn screen-btn-primary" type="submit"
+                        {% if not theatres %}disabled{% endif %}>
+                    Add Screen →
+                </button>
+            </form>
+        </section>
+
+        <!-- SCREEN TABLE -->
+        <section class="screen-panel">
+            <div class="screen-toolbar">
+                <div>
+                    <h2>Screen Directory</h2>
+                    <p class="screen-muted" style="margin:5px 0 0">
+                        All registered cinema screens.
+                    </p>
+                </div>
+                <input class="screen-search" id="screenSearch"
+                       type="search" placeholder="Search screens...">
+            </div>
+
+            <div class="screen-table-wrap">
+                <table id="screensTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Screen</th>
+                            <th>Theatre</th>
+                            <th>Type</th>
+                            <th>Seats</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for screen in screens %}
+                        <tr>
+                            <td class="screen-id">#{{ screen.screen_id }}</td>
+                            <td><strong>{{ screen.screen_name }}</strong></td>
+                            <td>
+                                {{ screen.theatre_name or ('Theatre #' ~ screen.theatre_id) }}
+                                {% if screen.theatre_city %}
+                                    <br><small>{{ screen.theatre_city }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="screen-type">
+                                    {{ screen.screen_type or 'Standard' }}
+                                </span>
+                            </td>
+                            <td>{{ screen.total_seats }}</td>
+                            <td>
+                                <div class="screen-actions">
+                                    <a class="screen-btn screen-btn-secondary"
+                                       href="{{ url_for('edit_screen', screen_id=screen.screen_id) }}">
+                                        Edit
+                                    </a>
+                                    <form method="POST"
+                                          action="{{ url_for('delete_screen', screen_id=screen.screen_id) }}"
+                                          onsubmit="return confirm('Delete this screen? Screens linked to seats or shows cannot be deleted.');">
+                                        <button class="screen-btn screen-btn-danger"
+                                                type="submit">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="screen-empty">
+                                    <strong>No screens yet</strong>
+                                    Add your first screen using the form.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+document.getElementById("screenSearch")?.addEventListener("input", function () {
+    const query = this.value.toLowerCase().trim();
+
+    document.querySelectorAll("#screensTable tbody tr").forEach(row => {
+        row.style.display =
+            row.innerText.toLowerCase().includes(query) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

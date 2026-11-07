@@ -1,0 +1,854 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineBook | Update Theatre</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CINEBOOK UPDATE THEATRE
+        ========================================= */
+
+        .update-theatre-page {
+            --theatre-bg: #070B1A;
+            --theatre-panel: #10162D;
+            --theatre-text: #F1F5FF;
+            --theatre-muted: #929FBE;
+            --theatre-cyan: #22D3EE;
+            --theatre-blue: #3B82F6;
+            --theatre-purple: #8B5CF6;
+            --theatre-border: rgba(139, 92, 246, .23);
+
+            min-height: 100vh;
+            margin: 0;
+            color: var(--theatre-text);
+            font-family: 'Inter', sans-serif;
+
+            background:
+                radial-gradient(
+                    ellipse at 5% 0%,
+                    rgba(59, 130, 246, .11),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    ellipse at 95% 25%,
+                    rgba(139, 92, 246, .11),
+                    transparent 32%
+                ),
+                var(--theatre-bg);
+        }
+
+        .update-theatre-page *,
+        .update-theatre-page *::before,
+        .update-theatre-page *::after {
+            box-sizing: border-box;
+        }
+
+        .update-theatre-page a {
+            text-decoration: none;
+        }
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .update-theatre-page .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+
+            min-height: 76px;
+            padding: 12px 5%;
+
+            background: rgba(7, 11, 26, .92);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(139, 92, 246, .20);
+        }
+
+        .update-theatre-page .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+
+            color: var(--theatre-text);
+        }
+
+        .update-theatre-page .logo-mark {
+            display: grid;
+            place-items: center;
+
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+
+            border-radius: 12px;
+            background: linear-gradient(
+                135deg,
+                var(--theatre-cyan),
+                var(--theatre-blue)
+            );
+
+            color: #07111E;
+            font-size: 23px;
+            font-weight: 800;
+
+            box-shadow: 0 0 23px rgba(34, 211, 238, .13);
+        }
+
+        .update-theatre-page .logo-text {
+            color: var(--theatre-text);
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -.8px;
+        }
+
+        .update-theatre-page .logo-text span {
+            color: var(--theatre-cyan);
+        }
+
+        .update-theatre-page .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .update-theatre-page .nav-links a {
+            padding: 11px 14px;
+
+            border: 1px solid transparent;
+            border-radius: 10px;
+
+            color: var(--theatre-muted);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .update-theatre-page .nav-links a:hover {
+            color: var(--theatre-text);
+            background: rgba(139, 92, 246, .07);
+        }
+
+        .update-theatre-page .nav-links a.active {
+            color: var(--theatre-cyan);
+            border-color: rgba(34, 211, 238, .15);
+            background: rgba(34, 211, 238, .07);
+        }
+
+        .update-theatre-page .user-area {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+        }
+
+        .update-theatre-page .admin-avatar {
+            display: grid;
+            place-items: center;
+
+            width: 37px;
+            height: 37px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .25);
+            border-radius: 12px;
+            background: rgba(34, 211, 238, .09);
+
+            color: var(--theatre-cyan);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .update-theatre-page .user-details strong {
+            display: block;
+            color: var(--theatre-text);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .update-theatre-page .user-details small {
+            display: block;
+            margin-top: 4px;
+            color: var(--theatre-muted);
+            font-size: 10px;
+        }
+
+        .update-theatre-page .logout {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 10px 13px;
+
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 10px;
+
+            color: #D4DDF5;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .update-theatre-page .logout:hover {
+            color: var(--theatre-cyan);
+            border-color: var(--theatre-cyan);
+            background: rgba(34, 211, 238, .05);
+        }
+
+        /* =========================================
+           MAIN LAYOUT
+        ========================================= */
+
+        .update-theatre-page .dashboard-container {
+            width: min(1150px, 92%);
+            margin: 0 auto;
+            padding: 42px 0 65px;
+        }
+
+        /* =========================================
+           HERO
+        ========================================= */
+
+        .update-theatre-page .dashboard-hero {
+            position: relative;
+            overflow: hidden;
+
+            padding: 34px;
+            margin-bottom: 30px;
+
+            border: 1px solid var(--theatre-border);
+            border-radius: 22px;
+
+            background:
+                radial-gradient(
+                    ellipse at 95% 0%,
+                    rgba(139, 92, 246, .17),
+                    transparent 42%
+                ),
+                radial-gradient(
+                    ellipse at 0% 100%,
+                    rgba(34, 211, 238, .08),
+                    transparent 40%
+                ),
+                linear-gradient(120deg, #111936, #0B1025);
+        }
+
+        .update-theatre-page .dashboard-hero::after {
+            content: "EDIT";
+            position: absolute;
+            right: 25px;
+            bottom: -15px;
+
+            color: rgba(139, 92, 246, .055);
+            font-size: clamp(90px, 12vw, 150px);
+            font-weight: 800;
+            letter-spacing: -5px;
+
+            pointer-events: none;
+        }
+
+        .update-theatre-page .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .update-theatre-page .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 16px;
+
+            color: var(--theatre-cyan);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+        }
+
+        .update-theatre-page .live-dot {
+            width: 7px;
+            height: 7px;
+            flex-shrink: 0;
+
+            border-radius: 50%;
+            background: var(--theatre-cyan);
+            box-shadow: 0 0 12px rgba(34, 211, 238, .55);
+        }
+
+        .update-theatre-page .hero-content h1 {
+            margin: 0;
+
+            color: var(--theatre-text);
+            font-size: clamp(31px, 4vw, 42px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+        .update-theatre-page .hero-content h1 span {
+            color: var(--theatre-cyan);
+        }
+
+        .update-theatre-page .hero-content p {
+            max-width: 600px;
+            margin: 13px 0 0;
+
+            color: var(--theatre-muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        /* =========================================
+           CONTENT SECTION
+        ========================================= */
+
+        .update-theatre-page .content-section {
+            display: flex;
+            justify-content: center;
+        }
+
+        .update-theatre-page .cinema-card {
+            position: relative;
+            width: 100%;
+            max-width: 780px;
+            overflow: hidden;
+            padding: 34px;
+
+            border: 1px solid rgba(139, 92, 246, .23);
+            border-radius: 20px;
+
+            background:
+                radial-gradient(
+                    ellipse at 100% 0%,
+                    rgba(139, 92, 246, .08),
+                    transparent 40%
+                ),
+                rgba(16, 22, 45, .90);
+
+            box-shadow: 0 24px 65px rgba(0, 0, 0, .17);
+        }
+
+        .update-theatre-page .form-card-heading {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            padding-bottom: 24px;
+            margin-bottom: 26px;
+
+            border-bottom: 1px solid rgba(139, 92, 246, .17);
+        }
+
+        .update-theatre-page .card-icon {
+            display: grid;
+            place-items: center;
+
+            width: 55px;
+            height: 55px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .20);
+            border-radius: 16px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .10),
+                rgba(139, 92, 246, .12)
+            );
+
+            font-size: 25px;
+        }
+
+        .update-theatre-page .form-card-heading span {
+            display: block;
+            margin-bottom: 6px;
+
+            color: var(--theatre-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .update-theatre-page .form-card-heading h2 {
+            margin: 0;
+            color: var(--theatre-text);
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+        }
+
+        .update-theatre-page .form-card-description {
+            margin: -10px 0 25px;
+
+            color: var(--theatre-muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           FORM
+        ========================================= */
+
+        .update-theatre-page .theatre-form {
+            display: flex;
+            flex-direction: column;
+            gap: 21px;
+        }
+
+        .update-theatre-page .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .update-theatre-page .form-group label {
+            color: #C6D0EA;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .9px;
+        }
+
+        .update-theatre-page .input-wrapper {
+            position: relative;
+        }
+
+        .update-theatre-page .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+
+            color: var(--theatre-cyan);
+            font-size: 14px;
+
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .update-theatre-page .form-group input {
+            width: 100%;
+            min-height: 49px;
+            padding: 13px 15px 13px 42px;
+
+            border: 1px solid rgba(139, 92, 246, .24);
+            border-radius: 11px;
+            outline: none;
+
+            background: rgba(7, 11, 26, .65);
+            color: var(--theatre-text);
+
+            font-family: inherit;
+            font-size: 12px;
+
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .update-theatre-page .form-group input::placeholder {
+            color: #687695;
+        }
+
+        .update-theatre-page .form-group input:hover {
+            border-color: rgba(139, 92, 246, .45);
+        }
+
+        .update-theatre-page .form-group input:focus {
+            border-color: var(--theatre-cyan);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, .08);
+        }
+
+        .update-theatre-page .form-hint {
+            color: #7886A7;
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+
+        .update-theatre-page .form-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            padding-top: 22px;
+            margin-top: 4px;
+
+            border-top: 1px solid rgba(139, 92, 246, .16);
+        }
+
+        .update-theatre-page .gold-button,
+        .update-theatre-page .outline-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+
+            min-height: 44px;
+            padding: 12px 17px;
+
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 800;
+
+            cursor: pointer;
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        .update-theatre-page .gold-button {
+            border: 0;
+
+            background: linear-gradient(
+                110deg,
+                var(--theatre-cyan),
+                var(--theatre-blue) 65%,
+                var(--theatre-purple)
+            );
+
+            color: #07111E;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, .14);
+        }
+
+        .update-theatre-page .gold-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, .22);
+        }
+
+        .update-theatre-page .outline-button {
+            border: 1px solid rgba(139, 92, 246, .27);
+            background: rgba(139, 92, 246, .05);
+            color: #C4B5FD;
+        }
+
+        .update-theatre-page .outline-button:hover {
+            border-color: var(--theatre-cyan);
+            background: rgba(34, 211, 238, .06);
+            color: var(--theatre-cyan);
+        }
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .update-theatre-page .dashboard-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+
+            padding: 24px 5%;
+            border-top: 1px solid rgba(139, 92, 246, .18);
+            background: rgba(7, 11, 26, .6);
+
+            color: var(--theatre-muted);
+            font-size: 11px;
+        }
+
+        .update-theatre-page .footer-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            color: var(--theatre-text);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .update-theatre-page .footer-logo .logo-mark {
+            display: grid;
+            place-items: center;
+
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+
+            background: linear-gradient(
+                135deg,
+                var(--theatre-cyan),
+                var(--theatre-blue)
+            );
+
+            color: #07111E;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .update-theatre-page .dashboard-footer p {
+            margin: 0;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 850px) {
+            .update-theatre-page .navbar {
+                padding-left: 3%;
+                padding-right: 3%;
+                gap: 13px;
+            }
+
+            .update-theatre-page .nav-links a {
+                padding: 10px;
+            }
+
+            .update-theatre-page .user-details {
+                display: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .update-theatre-page .navbar {
+                position: relative;
+                flex-wrap: wrap;
+                padding: 14px 4%;
+                gap: 13px;
+            }
+
+            .update-theatre-page .nav-links {
+                order: 3;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .update-theatre-page .nav-links a {
+                flex-shrink: 0;
+            }
+
+            .update-theatre-page .user-area {
+                margin-left: auto;
+            }
+
+            .update-theatre-page .dashboard-container {
+                width: 92%;
+                padding-top: 25px;
+            }
+
+            .update-theatre-page .dashboard-hero {
+                padding: 26px 21px;
+            }
+
+            .update-theatre-page .hero-content h1 {
+                font-size: 31px;
+            }
+
+            .update-theatre-page .dashboard-hero::after {
+                font-size: 90px;
+            }
+
+            .update-theatre-page .cinema-card {
+                padding: 24px 19px;
+            }
+
+            .update-theatre-page .form-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .update-theatre-page .form-actions > * {
+                width: 100%;
+            }
+
+            .update-theatre-page .dashboard-footer {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .update-theatre-page *,
+            .update-theatre-page *::before,
+            .update-theatre-page *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-navbar.css') }}">
+</head>
+
+<body class="update-theatre-page">
+
+    <!-- NAVBAR -->
+    {% include 'admin_navbar.html' %}
+
+    <!-- MAIN -->
+    <main class="dashboard-container">
+
+        <!-- PAGE HERO -->
+        <section class="dashboard-hero">
+
+            <div class="hero-content">
+
+                <div class="hero-label">
+                    <span class="live-dot"></span>
+                    CINEBOOK ADMIN / THEATRES
+                </div>
+
+                <h1>
+                    Update <span>Theatre.</span>
+                </h1>
+
+                <p>
+                    Modify theatre information and keep your
+                    CineBook cinema locations up to date.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- FORM SECTION -->
+        <section class="content-section">
+
+            <div class="cinema-card">
+
+                <div class="form-card-heading">
+
+                   
+
+                    <div>
+                        <span>THEATRE CONFIGURATION</span>
+                        <h2>Theatre Details</h2>
+                    </div>
+
+                </div>
+
+                <p class="form-card-description">
+                    Update the details below and save your changes
+                    to the CineBook database.
+                </p>
+
+                <form method="POST" class="theatre-form">
+
+                    <!-- THEATRE NAME -->
+                    <div class="form-group">
+
+                        <label for="name">THEATRE NAME</label>
+
+                        <div class="input-wrapper">
+                           
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value="{{ theatre.name }}"
+                                placeholder="Enter theatre name"
+                                maxlength="150"
+                                required>
+                        </div>
+
+                        <span class="form-hint">
+                            Enter the official name of the cinema.
+                        </span>
+
+                    </div>
+
+                    <!-- LOCATION -->
+                    <div class="form-group">
+
+                        <label for="location">LOCATION / ADDRESS</label>
+
+                        <div class="input-wrapper">
+                           
+
+                            <input
+                                type="text"
+                                id="location"
+                                name="location"
+                                value="{{ theatre.location }}"
+                                placeholder="Enter theatre location"
+                                maxlength="255"
+                                required>
+                        </div>
+
+                        <span class="form-hint">
+                            Specify the street, area or locality.
+                        </span>
+
+                    </div>
+
+                    <!-- CITY -->
+                    <div class="form-group">
+
+                        <label for="city">CITY</label>
+
+                        <div class="input-wrapper">
+                           
+
+                            <input
+                                type="text"
+                                id="city"
+                                name="city"
+                                value="{{ theatre.city }}"
+                                placeholder="Enter city"
+                                maxlength="100"
+                                required>
+                        </div>
+
+                        <span class="form-hint">
+                            Enter the city where the theatre is located.
+                        </span>
+
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="form-actions">
+
+                        <button type="submit" class="gold-button">
+                            <span>✓</span>
+                            Save Changes
+                        </button>
+
+                        <a href="{{ url_for('admin_theatres') }}"
+                           class="outline-button">
+                            ← Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="dashboard-footer">
+
+        <div class="footer-logo">
+            <span class="logo-mark">C</span>
+            CineBook
+        </div>
+
+        <p>Theatre Management</p>
+
+        <span>© 2026 CineBook</span>
+
+    </footer>
+
+</body>
+</html>

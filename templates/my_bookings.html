@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Bookings | CineBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
+{% include 'customer_navbar.html' %}
+
+<main class="phase4-wrap">
+    <h1>My Bookings</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="phase4-flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if bookings %}
+        <div class="phase4-grid">
+            {% for booking in bookings %}
+                <article class="phase4-card">
+                    <span class="phase4-tag">
+                        BOOKING #{{ booking.booking_id }}
+                    </span>
+
+                    <h2>{{ booking.movie_title }}</h2>
+                    <p>Date: {{ booking.show_date }}</p>
+                    <p>Time: {{ booking.show_time }}</p>
+                    <p>Booked on: {{ booking.booking_date }}</p>
+                    <p>Booking status: {{ booking.status }}</p>
+                    <p>Payment status: {{ booking.payment_status or 'Not recorded' }}</p>
+                    <h3>₹{{ '%.2f'|format(booking.total_amount|float) }}</h3>
+
+                    <a class="phase4-button secondary"
+                       href="{{ url_for('booking_confirmation', booking_id=booking.booking_id) }}">
+                        View Ticket
+                    </a>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <section class="phase4-card">
+            <h2>No bookings yet</h2>
+            <p>Browse the movies and book your first ticket.</p>
+            <a class="phase4-button" href="{{ url_for('browse_movies') }}">
+                Browse Movies
+            </a>
+        </section>
+    {% endif %}
+</main>
+</body>
+</html>

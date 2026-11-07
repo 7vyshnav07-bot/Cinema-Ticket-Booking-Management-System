@@ -1,0 +1,235 @@
+
+{% extends 'base.html' %}
+
+{% block title %}CineBook | Admin Payments{% endblock %}
+
+{% block head %}
+<style>
+.admin-data-page {
+    width: min(1500px, 94%);
+    margin: 0 auto;
+    padding: 30px 0 60px;
+    color: #e8edf9;
+}
+.admin-data-hero {
+    padding: 28px 30px;
+    margin-bottom: 22px;
+    border: 1px solid rgba(34,211,238,.18);
+    border-radius: 20px;
+    background: linear-gradient(125deg,#111936,#0b1025);
+}
+.admin-data-hero h1 {
+    margin: 0 0 8px;
+    font-size: clamp(26px,3vw,36px);
+    color: #f1f5ff;
+}
+.admin-data-hero p {
+    margin: 0;
+    color: #aab5cf;
+    line-height: 1.6;
+}
+.admin-data-card {
+    overflow: hidden;
+    border: 1px solid rgba(139,92,246,.2);
+    border-radius: 16px;
+    background: #0d1328;
+}
+.admin-data-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #222943;
+}
+.admin-data-card-head h2 {
+    margin: 0;
+    font-size: 17px;
+}
+.admin-data-count {
+    color: #19d8ed;
+    font-size: 13px;
+    font-weight: 700;
+}
+.admin-table-wrap {
+    overflow-x: auto;
+}
+.admin-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 780px;
+}
+.admin-data-table th {
+    padding: 14px 16px;
+    text-align: left;
+    background: #101a33;
+    color: #aab5cf;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    white-space: nowrap;
+}
+.admin-data-table td {
+    padding: 15px 16px;
+    border-top: 1px solid #202741;
+    color: #e2e8f6;
+    font-size: 13px;
+    vertical-align: middle;
+}
+.admin-data-table tbody tr:hover {
+    background: rgba(34,211,238,.035);
+}
+.admin-muted {
+    color: #93a0bc !important;
+}
+.admin-status {
+    display: inline-block;
+    padding: 6px 9px;
+    border: 1px solid #315b69;
+    border-radius: 999px;
+    background: #102633;
+    color: #7ce8f5;
+    font-size: 11px;
+    font-weight: 700;
+}
+.admin-status.pending {
+    border-color: #725a2f;
+    background: #2a2418;
+    color: #f5ce79;
+}
+.admin-status.failed,
+.admin-status.cancelled {
+    border-color: #71364b;
+    background: #2a1723;
+    color: #ff9aaa;
+}
+.admin-status.refunded {
+    border-color: #51427b;
+    background: #211a36;
+    color: #c9b5ff;
+}
+.admin-inline-form {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 190px;
+}
+.admin-inline-form select {
+    min-width: 112px;
+    padding: 8px 9px;
+    border: 1px solid #303a59;
+    border-radius: 8px;
+    background: #090f21;
+    color: #e8edf9;
+}
+.admin-action-button {
+    padding: 8px 11px;
+    border: 1px solid #07536a;
+    border-radius: 8px;
+    background: #0b1b2a;
+    color: #16d9ef;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.admin-action-button:hover {
+    background: #103044;
+}
+.admin-empty {
+    padding: 38px 20px !important;
+    text-align: center;
+    color: #93a0bc !important;
+}
+@media(max-width:650px) {
+    .admin-data-hero {
+        padding: 22px;
+    }
+    .admin-data-card-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="admin-data-page">
+    <header class="admin-data-hero">
+        <h1>Payments Management</h1>
+        <p>Review payment records, methods, amounts, dates, and update payment status.</p>
+    </header>
+
+    <section class="admin-data-card">
+        <div class="admin-data-card-head">
+            <h2>All Payments</h2>
+            <span class="admin-data-count">
+                {{ payments|length }} record{% if payments|length != 1 %}s{% endif %}
+            </span>
+        </div>
+
+        <div class="admin-table-wrap">
+            <table class="admin-data-table">
+                <thead>
+                    <tr>
+                        <th>Payment ID</th>
+                        <th>Booking ID</th>
+                        <th>Amount</th>
+                        <th>Payment Method</th>
+                        <th>Payment Date</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>#{{ payment.payment_id }}</td>
+                        <td>#{{ payment.booking_id }}</td>
+                        <td>₹{{ '%.2f'|format(payment.amount or 0) }}</td>
+                        <td>{{ payment.payment_method or '—' }}</td>
+                        <td class="admin-muted">
+                            {{ payment.payment_date or '—' }}
+                        </td>
+
+                        <td>
+                            <span class="admin-status {{ (payment.payment_status or 'pending')|lower|replace(' ', '-') }}">
+                                {{ payment.payment_status or 'Pending' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <form class="admin-inline-form"
+                                  method="post"
+                                  action="{{ url_for('update_payment_status', payment_id=payment.payment_id) }}">
+
+                                <select name="payment_status"
+                                        aria-label="Payment status for payment {{ payment.payment_id }}">
+                                    {% for status_option in ['Pending', 'Paid', 'Failed', 'Refunded'] %}
+                                    <option value="{{ status_option }}"
+                                        {% if (payment.payment_status or 'Pending')|lower == status_option|lower %}selected{% endif %}>
+                                        {{ status_option }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <button class="admin-action-button" type="submit">
+                                    Save
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td class="admin-empty" colspan="7">
+                            No payment records found yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+{% endblock %}

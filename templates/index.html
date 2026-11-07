@@ -1,0 +1,1468 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineBook | Cinema Ticket Booking</title>
+
+    <meta name="description"
+          content="Discover movies, explore theatres and manage your cinema ticket bookings with CineBook.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CINEBOOK LANDING PAGE
+        ========================================= */
+
+        .cinebook-home {
+            --home-bg: #070B1A;
+            --home-panel: #10162D;
+            --home-border: rgba(139, 92, 246, .22);
+            --home-text: #F1F5FF;
+            --home-muted: #929FBE;
+            --home-cyan: #22D3EE;
+            --home-blue: #3B82F6;
+            --home-purple: #8B5CF6;
+
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+
+            color: var(--home-text);
+            font-family: 'Inter', sans-serif;
+
+            background:
+                radial-gradient(
+                    ellipse at 0% 5%,
+                    rgba(59, 130, 246, .11),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    ellipse at 100% 30%,
+                    rgba(139, 92, 246, .11),
+                    transparent 30%
+                ),
+                var(--home-bg);
+        }
+
+        .cinebook-home *,
+        .cinebook-home *::before,
+        .cinebook-home *::after {
+            box-sizing: border-box;
+        }
+
+        .cinebook-home a {
+            text-decoration: none;
+        }
+
+        .cinebook-home button {
+            font-family: inherit;
+        }
+
+        .cinebook-home .home-container {
+            width: min(1320px, 91%);
+            margin: 0 auto;
+        }
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .cinebook-home .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+
+            min-height: 78px;
+            padding: 12px 5%;
+
+            border-bottom: 1px solid rgba(139, 92, 246, .19);
+            background: rgba(7, 11, 26, .92);
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .cinebook-home .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+
+            color: var(--home-text);
+        }
+
+        .cinebook-home .logo-mark {
+            display: grid;
+            place-items: center;
+
+            width: 43px;
+            height: 43px;
+
+            border-radius: 13px;
+            background: linear-gradient(
+                135deg,
+                var(--home-cyan),
+                var(--home-blue)
+            );
+
+            color: #07111E;
+            font-size: 24px;
+            font-weight: 900;
+
+            box-shadow: 0 0 25px rgba(34, 211, 238, .14);
+        }
+
+        .cinebook-home .logo-text {
+            color: var(--home-text);
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .cinebook-home .logo-text span {
+            color: var(--home-cyan);
+        }
+
+        .cinebook-home .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cinebook-home .nav-links a {
+            padding: 11px 14px;
+
+            border: 1px solid transparent;
+            border-radius: 10px;
+
+            color: var(--home-muted);
+            font-size: 12px;
+            font-weight: 600;
+
+            transition: .2s ease;
+        }
+
+        .cinebook-home .nav-links a:hover,
+        .cinebook-home .nav-links a.active {
+            color: var(--home-cyan);
+            border-color: rgba(34, 211, 238, .15);
+            background: rgba(34, 211, 238, .06);
+        }
+
+        .cinebook-home .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-shrink: 0;
+        }
+
+        .cinebook-home .nav-buttons > a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            min-height: 39px;
+            padding: 10px 13px;
+
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 9px;
+
+            color: #DCE6FF;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .cinebook-home .nav-buttons > a:hover {
+            border-color: var(--home-cyan);
+            background: rgba(34, 211, 238, .06);
+            color: var(--home-cyan);
+        }
+
+        .cinebook-home .nav-buttons > a.admin-login-btn {
+            border-color: rgba(34, 211, 238, .25);
+            background: rgba(34, 211, 238, .07);
+            color: var(--home-cyan);
+        }
+
+        .cinebook-home .nav-buttons > a.admin-login-btn:hover {
+            background: rgba(34, 211, 238, .14);
+        }
+
+        /* =========================================
+           HERO LAYOUT
+        ========================================= */
+
+        .cinebook-home .hero {
+            position: relative;
+
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+            align-items: center;
+            gap: 55px;
+
+            min-height: 590px;
+            padding: 65px 0 75px;
+        }
+
+        .cinebook-home .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cinebook-home .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-bottom: 24px;
+            padding: 10px 13px;
+
+            border: 1px solid rgba(34, 211, 238, .19);
+            border-radius: 9px;
+            background: rgba(34, 211, 238, .05);
+
+            color: var(--home-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+        }
+
+        .cinebook-home .hero-label span {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+            background: var(--home-cyan);
+            box-shadow: 0 0 12px rgba(34, 211, 238, .65);
+        }
+
+        .cinebook-home .hero-content h1 {
+            margin: 0;
+
+            color: var(--home-text);
+            font-size: clamp(40px, 4.8vw, 66px);
+            font-weight: 900;
+            letter-spacing: -2.7px;
+            line-height: 1.13;
+        }
+
+        .cinebook-home .hero-content h1 strong {
+            display: inline-block;
+
+            background: linear-gradient(
+                100deg,
+                var(--home-cyan),
+                var(--home-blue) 55%,
+                #A78BFA
+            );
+
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cinebook-home .hero-content > p {
+            max-width: 520px;
+            margin: 23px 0 0;
+
+            color: #A3B0CF;
+            font-size: 13px;
+            line-height: 2;
+        }
+
+        /* =========================================
+           HERO BUTTONS
+        ========================================= */
+
+        .cinebook-home .hero-buttons {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            margin-top: 30px;
+        }
+
+        .cinebook-home .gold-button,
+        .cinebook-home .outline-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            min-height: 47px;
+            padding: 13px 18px;
+
+            border-radius: 10px;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .cinebook-home .gold-button {
+            border: none;
+
+            background: linear-gradient(
+                110deg,
+                var(--home-cyan),
+                var(--home-blue) 65%,
+                var(--home-purple)
+            );
+
+            color: #07111E;
+            box-shadow: 0 9px 27px rgba(59, 130, 246, .17);
+        }
+
+        .cinebook-home .gold-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 13px 32px rgba(59, 130, 246, .27);
+        }
+
+        .cinebook-home .outline-button {
+            border: 1px solid rgba(139, 92, 246, .28);
+            background: rgba(139, 92, 246, .05);
+
+            color: #D5DDF5;
+        }
+
+        .cinebook-home .outline-button:hover {
+            transform: translateY(-2px);
+            border-color: var(--home-cyan);
+            color: var(--home-cyan);
+        }
+
+        /* =========================================
+           HERO STATISTICS
+        ========================================= */
+
+        .cinebook-home .hero-stats {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0;
+
+            margin-top: 43px;
+        }
+
+        .cinebook-home .hero-stats > div {
+            min-width: 95px;
+            padding: 0 23px;
+
+            border-right: 1px solid rgba(139, 92, 246, .22);
+        }
+
+        .cinebook-home .hero-stats > div:first-child {
+            padding-left: 0;
+        }
+
+        .cinebook-home .hero-stats > div:last-child {
+            border-right: none;
+        }
+
+        .cinebook-home .hero-stats strong {
+            display: block;
+
+            color: var(--home-text);
+            font-size: 25px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .cinebook-home .hero-stats span {
+            display: block;
+            margin-top: 6px;
+
+            color: var(--home-muted);
+            font-size: 10px;
+        }
+
+        /* =========================================
+           CINEMA VISUAL
+        ========================================= */
+
+        .cinebook-home .hero-visual {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            min-width: 0;
+            min-height: 420px;
+            padding: 22px;
+        }
+
+        .cinebook-home .visual-glow {
+            position: absolute;
+            top: 15%;
+            left: 12%;
+
+            width: 75%;
+            height: 65%;
+
+            border-radius: 50%;
+            background: rgba(59, 130, 246, .16);
+            filter: blur(75px);
+
+            pointer-events: none;
+        }
+
+        .cinebook-home .movie-screen {
+            position: relative;
+            z-index: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 315px;
+            padding: 30px;
+
+            border: 1px solid rgba(34, 211, 238, .29);
+            border-radius: 20px;
+
+            background:
+                radial-gradient(
+                    ellipse at 50% 0%,
+                    rgba(139, 92, 246, .23),
+                    transparent 55%
+                ),
+                linear-gradient(145deg, #121D3C, #080D1D);
+
+            box-shadow:
+                0 0 0 7px rgba(139, 92, 246, .035),
+                0 25px 65px rgba(0, 0, 0, .35),
+                inset 0 0 40px rgba(59, 130, 246, .05);
+
+            transform: perspective(1000px) rotateY(-3deg);
+            transition: transform .3s ease;
+        }
+
+        .cinebook-home .hero-visual:hover .movie-screen {
+            transform: perspective(1000px) rotateY(0deg) translateY(-3px);
+        }
+
+        .cinebook-home .screen-content {
+            position: relative;
+            width: 100%;
+            text-align: center;
+        }
+
+        .cinebook-home .screen-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-bottom: 22px;
+            padding: 8px 12px;
+
+            border: 1px solid rgba(34, 211, 238, .20);
+            border-radius: 7px;
+            background: rgba(34, 211, 238, .06);
+
+            color: var(--home-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .cinebook-home .screen-badge span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--home-cyan);
+        }
+
+        .cinebook-home .screen-content h2 {
+            margin: 0;
+
+            color: var(--home-text);
+            font-size: clamp(43px, 5vw, 65px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: .98;
+        }
+
+        .cinebook-home .screen-content h2 span {
+            display: block;
+
+            background: linear-gradient(
+                90deg,
+                var(--home-cyan),
+                var(--home-blue),
+                #A78BFA
+            );
+
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cinebook-home .film-line {
+            width: 75px;
+            height: 3px;
+            margin: 25px auto 0;
+
+            border-radius: 5px;
+            background: linear-gradient(
+                90deg,
+                var(--home-cyan),
+                var(--home-purple)
+            );
+        }
+
+        /* Floating info panels */
+
+        .cinebook-home .floating-card {
+            position: absolute;
+            z-index: 3;
+
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 13px 15px;
+
+            border: 1px solid rgba(139, 92, 246, .28);
+            border-radius: 12px;
+
+            background: rgba(13, 20, 43, .95);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, .22);
+
+            backdrop-filter: blur(12px);
+        }
+
+        .cinebook-home .floating-card-top {
+            top: 4px;
+            right: -3px;
+        }
+
+        .cinebook-home .floating-card-bottom {
+            bottom: 42px;
+            left: -3px;
+        }
+
+        .cinebook-home .floating-icon {
+            display: grid;
+            place-items: center;
+
+            width: 35px;
+            height: 35px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .17);
+            border-radius: 10px;
+            background: rgba(34, 211, 238, .07);
+
+            font-size: 16px;
+        }
+
+        .cinebook-home .floating-card strong {
+            display: block;
+            color: var(--home-text);
+            font-size: 10px;
+        }
+
+        .cinebook-home .floating-card small {
+            display: block;
+            margin-top: 5px;
+            color: var(--home-muted);
+            font-size: 9px;
+        }
+
+        /* =========================================
+           SECTION HEADINGS
+        ========================================= */
+
+        .cinebook-home .features {
+            padding: 68px 0 75px;
+            scroll-margin-top: 95px;
+        }
+
+        .cinebook-home .section-heading {
+            max-width: 670px;
+            margin: 0 auto 38px;
+            text-align: center;
+        }
+
+        .cinebook-home .section-heading > span,
+        .cinebook-home .about-copy > span {
+            display: inline-block;
+            margin-bottom: 13px;
+
+            color: var(--home-cyan);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .cinebook-home .section-heading h2 {
+            margin: 0;
+
+            color: var(--home-text);
+            font-size: clamp(27px, 3.5vw, 37px);
+            font-weight: 800;
+            letter-spacing: -1.2px;
+            line-height: 1.3;
+        }
+
+        .cinebook-home .section-heading p {
+            margin: 13px 0 0;
+
+            color: var(--home-muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        /* =========================================
+           FEATURE CARDS
+        ========================================= */
+
+        .cinebook-home .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 17px;
+        }
+
+        .cinebook-home .feature-card {
+            position: relative;
+            overflow: hidden;
+            min-width: 0;
+            padding: 25px 22px;
+
+            border: 1px solid rgba(139, 92, 246, .20);
+            border-radius: 16px;
+
+            background: linear-gradient(
+                145deg,
+                rgba(18, 26, 52, .94),
+                rgba(11, 17, 37, .97)
+            );
+
+            transition: transform .22s ease, border-color .22s ease;
+        }
+
+        .cinebook-home .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 2px;
+
+            background: linear-gradient(
+                90deg,
+                var(--home-cyan),
+                var(--home-blue),
+                var(--home-purple)
+            );
+
+            opacity: 0;
+            transition: opacity .22s ease;
+        }
+
+        .cinebook-home .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(34, 211, 238, .32);
+        }
+
+        .cinebook-home .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .cinebook-home .feature-icon {
+            display: grid;
+            place-items: center;
+
+            width: 53px;
+            height: 53px;
+            margin-bottom: 22px;
+
+            border: 1px solid rgba(34, 211, 238, .18);
+            border-radius: 15px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .10),
+                rgba(139, 92, 246, .13)
+            );
+
+            font-size: 23px;
+        }
+
+        .cinebook-home .feature-card h3 {
+            margin: 0 0 11px;
+
+            color: var(--home-text);
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .cinebook-home .feature-card p {
+            margin: 0;
+
+            color: var(--home-muted);
+            font-size: 11px;
+            line-height: 1.9;
+        }
+
+        .cinebook-home .feature-number {
+            position: absolute;
+            top: 20px;
+            right: 19px;
+
+            color: rgba(167, 181, 220, .36);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+       /* About CineBook — centered layout */
+.about-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 55px;
+
+    width: calc(100% - 48px);
+    max-width: 1200px;
+    margin: 80px auto;
+
+    padding: 55px 50px;
+
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 26px;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(139, 92, 246, 0.12),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #10162D,
+            #0D1328
+        );
+
+    box-sizing: border-box;
+}
+
+.about-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.about-copy > span {
+    color: #22D3EE;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+}
+
+.about-copy h2 {
+    margin: 0;
+    color: #F1F5FF;
+    font-size: clamp(30px, 3.2vw, 44px);
+    line-height: 1.3;
+    letter-spacing: -1.5px;
+}
+
+.about-copy h2 span {
+    color: #22D3EE;
+}
+
+.about-description {
+    margin: 0 0 26px;
+    color: #A5B1CE;
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.about-points {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.about-point {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: #CBD5E8;
+    font-size: 14px;
+}
+
+.about-point span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 30px;
+    height: 30px;
+
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    border-radius: 10px;
+
+    color: #22D3EE;
+    background: rgba(34, 211, 238, 0.08);
+    font-weight: 800;
+}
+
+/* Tablet and mobile */
+@media (max-width: 768px) {
+    .about-section {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        width: calc(100% - 32px);
+        margin: 50px auto;
+        padding: 32px 24px;
+    }
+
+    .about-copy h2 {
+        font-size: 34px;
+    }
+}   
+
+        /* =========================================
+           BOTTOM CTA
+        ========================================= */
+
+        .cinebook-home .cta-section {
+            position: relative;
+            overflow: hidden;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 25px;
+
+           margin-top: 50px;
+margin-bottom: 70px;
+            padding: 32px;
+
+            border: 1px solid rgba(34, 211, 238, .20);
+            border-radius: 18px;
+
+            background: linear-gradient(
+                110deg,
+                rgba(34, 211, 238, .08),
+                rgba(59, 130, 246, .08),
+                rgba(139, 92, 246, .10)
+            );
+        }
+
+        .cinebook-home .cta-section h2 {
+            margin: 0 0 9px;
+            color: var(--home-text);
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: -.6px;
+        }
+
+        .cinebook-home .cta-section p {
+            margin: 0;
+            color: var(--home-muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .cinebook-home .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
+
+            padding: 25px 5%;
+
+            border-top: 1px solid rgba(139, 92, 246, .19);
+            background: rgba(7, 11, 26, .72);
+
+            color: var(--home-muted);
+            font-size: 10px;
+        }
+
+        .cinebook-home .footer-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            color: var(--home-text);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .cinebook-home .footer-logo .logo-mark {
+            width: 31px;
+            height: 31px;
+            border-radius: 9px;
+            font-size: 17px;
+        }
+
+        .cinebook-home .footer p {
+            margin: 0;
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN
+        ========================================= */
+
+        @media (max-width: 1100px) {
+            .cinebook-home .navbar {
+                padding-left: 3%;
+                padding-right: 3%;
+                gap: 13px;
+            }
+
+            .cinebook-home .nav-links a {
+                padding: 10px;
+            }
+
+            .cinebook-home .nav-buttons {
+                gap: 6px;
+            }
+
+            .cinebook-home .nav-buttons > a {
+                padding: 10px;
+            }
+
+            .cinebook-home .hero {
+                gap: 30px;
+            }
+
+            .cinebook-home .feature-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 780px) {
+            .cinebook-home .navbar {
+                position: relative;
+                flex-wrap: wrap;
+                padding: 14px 4%;
+            }
+
+            .cinebook-home .nav-links {
+                order: 3;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .cinebook-home .nav-links a {
+                flex-shrink: 0;
+            }
+
+            .cinebook-home .nav-buttons {
+                margin-left: auto;
+                flex-wrap: wrap;
+            }
+
+            .cinebook-home .hero {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 48px 0 45px;
+            }
+
+            .cinebook-home .hero-content h1 {
+                font-size: clamp(39px, 8vw, 58px);
+            }
+
+            .cinebook-home .hero-visual {
+                width: min(100%, 530px);
+                min-height: 390px;
+                margin: 0 auto;
+            }
+
+            .cinebook-home .about-section {
+                grid-template-columns: 1fr;
+                gap: 22px;
+                padding: 29px;
+            }
+
+            .cinebook-home .features {
+                padding-top: 45px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .cinebook-home .home-container {
+                width: 92%;
+            }
+
+            .cinebook-home .logo-text {
+                font-size: 19px;
+            }
+
+            .cinebook-home .nav-buttons > a {
+                font-size: 9px;
+                padding: 9px;
+            }
+
+            .cinebook-home .hero-content h1 {
+                font-size: 39px;
+                letter-spacing: -1.8px;
+            }
+
+            .cinebook-home .hero-buttons {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .cinebook-home .hero-buttons a {
+                width: 100%;
+            }
+
+            .cinebook-home .hero-stats > div {
+                min-width: 0;
+                flex: 1;
+                padding: 0 13px;
+            }
+
+            .cinebook-home .hero-stats strong {
+                font-size: 22px;
+            }
+
+            .cinebook-home .hero-visual {
+                min-height: 350px;
+                padding: 14px;
+            }
+
+            .cinebook-home .movie-screen {
+                min-height: 270px;
+                padding: 20px;
+            }
+
+            .cinebook-home .screen-content h2 {
+                font-size: 46px;
+            }
+
+            .cinebook-home .floating-card-top {
+                right: -2px;
+            }
+
+            .cinebook-home .floating-card-bottom {
+                left: -2px;
+                bottom: 25px;
+            }
+
+            .cinebook-home .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cinebook-home .feature-card {
+                padding: 23px;
+            }
+
+            .cinebook-home .about-section {
+                padding: 23px;
+            }
+
+            .cinebook-home .cta-section {
+                align-items: stretch;
+                flex-direction: column;
+                padding: 24px;
+            }
+
+            .cinebook-home .cta-section .gold-button {
+                width: 100%;
+            }
+
+            .cinebook-home .footer {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cinebook-home *,
+            .cinebook-home *::before,
+            .cinebook-home *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="cinebook-home">
+
+    <!-- =========================================
+         NAVBAR
+    ========================================= -->
+
+    <header class="navbar">
+
+        <a href="{{ url_for('index') }}" class="logo">
+
+            <span class="logo-mark">C</span>
+
+            <span class="logo-text">
+                Cine<span>Book</span>
+            </span>
+
+        </a>
+
+        <nav class="nav-links">
+
+            <a href="{{ url_for('index') }}" class="active">
+                Home
+            </a>
+
+            <a href="#features">
+                Features
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+        </nav>
+
+        <div class="nav-buttons">
+
+            <a href="{{ url_for('login') }}">
+                Login
+            </a>
+
+            <a href="{{ url_for('register') }}">
+                Register
+            </a>
+
+            <a href="{{ url_for('admin_login') }}"
+               class="admin-login-btn">
+                🔐 Admin
+            </a>
+
+        </div>
+
+    </header>
+
+    <main>
+
+        <!-- =====================================
+             HERO
+        ===================================== -->
+
+        <section class="home-container hero">
+
+            <div class="hero-content">
+
+                <div class="hero-label">
+                    <span></span>
+                    YOUR CINEMA EXPERIENCE
+                </div>
+
+                <h1>
+                    Movies are better
+                    <br>
+                    <strong>on the big screen.</strong>
+                </h1>
+
+                <p>
+                    Discover movies, explore your favourite theatres,
+                    choose your seats and plan your next cinema
+                    experience — all in one place.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="{{ url_for('register') }}"
+                       class="gold-button">
+                        Get Started <span>→</span>
+                    </a>
+
+                    <a href="{{ url_for('login') }}"
+                       class="outline-button">
+                        I already have an account
+                    </a>
+
+                </div>
+
+                <div class="hero-stats">
+
+                    <div>
+                        <strong>12+</strong>
+                        <span>Movies</span>
+                    </div>
+
+                    <div>
+                        <strong>5</strong>
+                        <span>Theatres</span>
+                    </div>
+
+                    <div>
+                        <strong>100+</strong>
+                        <span>Seats</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CINEMA VISUAL -->
+
+            <div class="hero-visual">
+
+                <div class="visual-glow"></div>
+
+                <div class="movie-screen">
+
+                    <div class="screen-content">
+
+                        <div class="screen-badge">
+                            <span></span>
+                            NOW SHOWING
+                        </div>
+
+                        <h2>
+                            YOUR
+                            <span>MOVIE</span>
+                            NIGHT
+                        </h2>
+
+                        <div class="film-line"></div>
+
+                    </div>
+
+                </div>
+
+                <div class="floating-card floating-card-top">
+
+                    <div class="floating-icon">🎬</div>
+
+                    <div>
+                        <strong>Your next movie</strong>
+                        <small>Find your next favourite</small>
+                    </div>
+
+                </div>
+
+                <div class="floating-card floating-card-bottom">
+
+                    <div class="floating-icon">🎟️</div>
+
+                    <div>
+                        <strong>Movie night, sorted</strong>
+                        <small>Explore cinema bookings</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================
+             FEATURES
+        ===================================== -->
+
+        <section class="home-container features" id="features">
+
+            <div class="section-heading">
+
+                <span>WHY CINEBOOK</span>
+
+                <h2>
+                    Everything you need for movie night.
+                </h2>
+
+                <p>
+                    From discovering a movie to keeping track
+                    of your bookings, enjoy a simpler cinema
+                    experience.
+                </p>
+
+            </div>
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+
+                    <span class="feature-number">01</span>
+
+                    <div class="feature-icon">🎬</div>
+
+                    <h3>Discover Movies</h3>
+
+                    <p>
+                        Explore movies currently available
+                        in the CineBook catalogue.
+                    </p>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <span class="feature-number">02</span>
+
+                    <div class="feature-icon">🎟️</div>
+
+                    <h3>Easy Booking</h3>
+
+                    <p>
+                        Find your preferred show and manage
+                        your ticket booking experience.
+                    </p>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <span class="feature-number">03</span>
+
+                    <div class="feature-icon">💺</div>
+
+                    <h3>Choose Your Seat</h3>
+
+                    <p>
+                        Make your cinema experience personal
+                        by selecting your preferred seats.
+                    </p>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <span class="feature-number">04</span>
+
+                    <div class="feature-icon">📋</div>
+
+                    <h3>Manage Bookings</h3>
+
+                    <p>
+                        Keep track of your cinema booking
+                        history from your customer dashboard.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================
+             ABOUT
+        ===================================== -->
+
+        <section class="home-container about-section" id="about">
+
+            <div class="about-copy">
+
+                <span>ABOUT CINEBOOK</span>
+
+                <h2>
+                    Your cinema.
+                    <br>
+                    Your <span>experience.</span>
+                </h2>
+
+            </div>
+
+            <div>
+
+                <p class="about-description">
+                    CineBook is a cinema ticket booking management
+                    system designed to make the movie booking
+                    experience simple, organised and convenient.
+                    Discover movies, explore theatre locations
+                    and keep your booking information together.
+                </p>
+
+                <div class="about-points">
+
+                    <div class="about-point">
+                        <span>✓</span>
+                        Explore available movies and theatres
+                    </div>
+
+                    <div class="about-point">
+                        <span>✓</span>
+                        Access your customer booking dashboard
+                    </div>
+
+                    <div class="about-point">
+                        <span>✓</span>
+                        Manage cinema information through administration
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================
+             CALL TO ACTION
+        ===================================== -->
+
+        <section class="home-container cta-section">
+
+            <div>
+                <h2>Ready for your next movie?</h2>
+
+                <p>
+                    Create your CineBook account and get started.
+                </p>
+            </div>
+
+            <a href="{{ url_for('register') }}"
+               class="gold-button">
+                Create Your Account <span>→</span>
+            </a>
+
+        </section>
+
+    </main>
+
+    <!-- =========================================
+         FOOTER
+    ========================================= -->
+
+    <footer class="footer">
+
+        <div class="footer-logo">
+
+            <span class="logo-mark">C</span>
+
+            CineBook
+
+        </div>
+
+        <p>Your seat. Your movie. Your experience.</p>
+
+        <span>© 2026 CineBook</span>
+
+    </footer>
+
+</body>
+</html>

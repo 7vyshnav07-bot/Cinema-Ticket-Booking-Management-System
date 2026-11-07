@@ -1,0 +1,26 @@
+<header class="cinebook-admin-navbar">
+    <a href="{{ url_for('admin_dashboard') }}" class="cinebook-admin-brand">
+        <span class="cinebook-admin-logo-mark">C</span>
+        <span class="cinebook-admin-logo-text">Cine<span>Book</span></span>
+    </a>
+
+    <nav class="cinebook-admin-links" aria-label="Admin navigation">
+        <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">Dashboard</a>
+        <a href="{{ url_for('admin_movies') }}" class="{% if request.endpoint in ['admin_movies', 'add_movie', 'edit_movie'] %}active{% endif %}">Movies</a>
+        <a href="{{ url_for('admin_theatres') }}" class="{% if request.endpoint in ['admin_theatres', 'add_theatre', 'update_theatre'] %}active{% endif %}">Theatres</a>
+        <a href="{{ url_for('admin_screens') }}" class="{% if request.endpoint in ['admin_screens', 'edit_screen', 'delete_screen_with_checks'] %}active{% endif %}">Screens</a>
+        <a href="{{ url_for('admin_seats') }}" class="{% if request.endpoint in ['admin_seats', 'add_seat', 'delete_seat'] %}active{% endif %}">Seats</a>
+        <a href="{{ url_for('admin_shows') }}" class="{% if request.endpoint in ['admin_shows', 'add_show', 'delete_show'] %}active{% endif %}">Shows</a>
+        <a href="{{ url_for('admin_bookings') }}" class="{% if request.endpoint == 'admin_bookings' %}active{% endif %}">Bookings</a>
+        <a href="{{ url_for('admin_payments') }}" class="{% if request.endpoint == 'admin_payments' %}active{% endif %}">Payments</a>
+        <a href="{{ url_for('admin_integrity') }}" class="{% if request.endpoint == 'admin_integrity' %}active{% endif %}">Database Integrity Checks</a>
+    </nav>
+
+    <div class="cinebook-admin-account">
+        <div class="cinebook-admin-account-info">
+            <strong>{{ session.get('admin_name', admin_name|default('CineBook Administrator')) }}</strong>
+            <small>Administrator</small>
+        </div>
+        <a href="{{ url_for('admin_logout') }}" class="cinebook-admin-logout">Logout ↗</a>
+    </div>
+</header>

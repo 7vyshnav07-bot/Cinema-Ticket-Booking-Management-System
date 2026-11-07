@@ -1,0 +1,1025 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineBook | Manage Theatres</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CINEBOOK THEATRE MANAGEMENT
+        ========================================= */
+
+        .admin-theatres-page {
+            --theatre-bg: #070B1A;
+            --theatre-panel: #10162D;
+            --theatre-text: #F1F5FF;
+            --theatre-muted: #929FBE;
+            --theatre-cyan: #22D3EE;
+            --theatre-blue: #3B82F6;
+            --theatre-purple: #8B5CF6;
+            --theatre-border: rgba(139, 92, 246, .23);
+
+            min-height: 100vh;
+            margin: 0;
+            color: var(--theatre-text);
+            font-family: 'Inter', sans-serif;
+
+            background:
+                radial-gradient(
+                    ellipse at 5% 0%,
+                    rgba(59, 130, 246, .10),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    ellipse at 95% 25%,
+                    rgba(139, 92, 246, .10),
+                    transparent 32%
+                ),
+                var(--theatre-bg);
+        }
+
+        .admin-theatres-page *,
+        .admin-theatres-page *::before,
+        .admin-theatres-page *::after {
+            box-sizing: border-box;
+        }
+
+        .admin-theatres-page a {
+            text-decoration: none;
+        }
+
+        /* =========================================
+           NAVIGATION
+        ========================================= */
+
+        .admin-theatres-page .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+
+            min-height: 76px;
+            padding: 12px 5%;
+
+            background: rgba(7, 11, 26, .92);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(139, 92, 246, .20);
+        }
+
+        .admin-theatres-page .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+
+            color: var(--theatre-text);
+        }
+
+        .admin-theatres-page .logo-mark {
+            display: grid;
+            place-items: center;
+
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+
+            border-radius: 12px;
+            background: linear-gradient(
+                135deg,
+                var(--theatre-cyan),
+                var(--theatre-blue)
+            );
+
+            color: #07111E;
+            font-size: 23px;
+            font-weight: 800;
+
+            box-shadow: 0 0 23px rgba(34, 211, 238, .13);
+        }
+
+        .admin-theatres-page .logo-text {
+            color: var(--theatre-text);
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -.8px;
+        }
+
+        .admin-theatres-page .logo-text span {
+            color: var(--theatre-cyan);
+        }
+
+        .admin-theatres-page .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .admin-theatres-page .nav-links a {
+            padding: 11px 14px;
+
+            border: 1px solid transparent;
+            border-radius: 10px;
+
+            color: var(--theatre-muted);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .admin-theatres-page .nav-links a:hover {
+            color: var(--theatre-text);
+            background: rgba(139, 92, 246, .07);
+        }
+
+        .admin-theatres-page .nav-links a.active {
+            color: var(--theatre-cyan);
+            border-color: rgba(34, 211, 238, .15);
+            background: rgba(34, 211, 238, .07);
+        }
+
+        .admin-theatres-page .user-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .admin-theatres-page .admin-avatar {
+            display: grid;
+            place-items: center;
+
+            width: 37px;
+            height: 37px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .25);
+            border-radius: 12px;
+            background: rgba(34, 211, 238, .09);
+
+            color: var(--theatre-cyan);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .admin-theatres-page .user-details strong {
+            display: block;
+            color: var(--theatre-text);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .admin-theatres-page .user-details small {
+            display: block;
+            margin-top: 4px;
+            color: var(--theatre-muted);
+            font-size: 10px;
+        }
+
+        .admin-theatres-page .logout {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 10px 13px;
+
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 10px;
+
+            color: #D4DDF5;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .admin-theatres-page .logout:hover {
+            color: var(--theatre-cyan);
+            border-color: var(--theatre-cyan);
+            background: rgba(34, 211, 238, .05);
+        }
+
+        /* =========================================
+           MAIN CONTAINER
+        ========================================= */
+
+        .admin-theatres-page .dashboard-container {
+            width: min(1380px, 92%);
+            margin: 0 auto;
+            padding: 42px 0 65px;
+        }
+
+        /* =========================================
+           HERO HEADER
+        ========================================= */
+
+        .admin-theatres-page .dashboard-hero {
+            position: relative;
+            overflow: hidden;
+
+            padding: 36px;
+            margin-bottom: 35px;
+
+            border: 1px solid var(--theatre-border);
+            border-radius: 22px;
+
+            background:
+                radial-gradient(
+                    ellipse at 95% 0%,
+                    rgba(139, 92, 246, .17),
+                    transparent 40%
+                ),
+                radial-gradient(
+                    ellipse at 0% 100%,
+                    rgba(34, 211, 238, .09),
+                    transparent 40%
+                ),
+                linear-gradient(120deg, #111936, #0B1025);
+        }
+
+        .admin-theatres-page .dashboard-hero::after {
+            content: "THEATRES";
+            position: absolute;
+            right: 18px;
+            bottom: -6px;
+
+            color: rgba(139, 92, 246, .045);
+            font-size: clamp(55px, 9vw, 115px);
+            font-weight: 800;
+            letter-spacing: -5px;
+
+            pointer-events: none;
+        }
+
+        .admin-theatres-page .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-theatres-page .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 17px;
+
+            color: var(--theatre-cyan);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+        }
+
+        .admin-theatres-page .live-dot {
+            width: 7px;
+            height: 7px;
+            flex-shrink: 0;
+
+            border-radius: 50%;
+            background: var(--theatre-cyan);
+            box-shadow: 0 0 12px rgba(34, 211, 238, .55);
+        }
+
+        .admin-theatres-page .hero-content h1 {
+            margin: 0;
+
+            color: var(--theatre-text);
+            font-size: clamp(32px, 4vw, 43px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+        .admin-theatres-page .hero-content h1 span {
+            color: var(--theatre-cyan);
+        }
+
+        .admin-theatres-page .hero-content p {
+            max-width: 600px;
+            margin: 13px 0 24px;
+
+            color: var(--theatre-muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        /* Add theatre button */
+
+        .admin-theatres-page .gold-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+
+            min-height: 43px;
+            padding: 11px 16px;
+
+            border: 0;
+            border-radius: 10px;
+
+            background: linear-gradient(
+                110deg,
+                var(--theatre-cyan),
+                var(--theatre-blue) 65%,
+                var(--theatre-purple)
+            );
+
+            color: #07111E;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+
+            box-shadow: 0 8px 24px rgba(59, 130, 246, .14);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .admin-theatres-page .gold-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, .23);
+        }
+
+        /* =========================================
+           THEATRE DATABASE SECTION
+        ========================================= */
+
+        .admin-theatres-page .content-section {
+            padding: 28px;
+
+            border: 1px solid rgba(139, 92, 246, .18);
+            border-radius: 20px;
+
+            background: rgba(12, 18, 39, .60);
+        }
+
+        .admin-theatres-page .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+
+            padding-bottom: 22px;
+            margin-bottom: 24px;
+
+            border-bottom: 1px solid rgba(139, 92, 246, .16);
+        }
+
+        .admin-theatres-page .section-heading > div > span {
+            display: block;
+            margin-bottom: 8px;
+
+            color: var(--theatre-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+        }
+
+        .admin-theatres-page .section-heading h2 {
+            margin: 0;
+            color: var(--theatre-text);
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: -.6px;
+        }
+
+        .admin-theatres-page .section-heading p {
+            margin: 8px 0 0;
+            color: var(--theatre-muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .admin-theatres-page .theatre-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 9px 13px;
+
+            border: 1px solid rgba(34, 211, 238, .19);
+            border-radius: 10px;
+            background: rgba(34, 211, 238, .05);
+
+            color: var(--theatre-muted);
+            font-size: 11px;
+        }
+
+        .admin-theatres-page .theatre-count strong {
+            color: var(--theatre-cyan);
+            font-size: 15px;
+        }
+
+        /* =========================================
+           THEATRE CARDS
+        ========================================= */
+
+        .admin-theatres-page .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .admin-theatres-page .cinema-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 0;
+            min-height: 300px;
+            overflow: hidden;
+            padding: 23px;
+
+            border: 1px solid rgba(139, 92, 246, .20);
+            border-radius: 16px;
+
+            background: linear-gradient(
+                145deg,
+                rgba(18, 26, 52, .97),
+                rgba(11, 17, 37, .97)
+            );
+
+            transition:
+                transform .22s ease,
+                border-color .22s ease,
+                box-shadow .22s ease;
+        }
+
+        .admin-theatres-page .cinema-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+
+            background: linear-gradient(
+                90deg,
+                var(--theatre-cyan),
+                var(--theatre-blue),
+                var(--theatre-purple)
+            );
+
+            opacity: 0;
+            transition: opacity .22s ease;
+        }
+
+        .admin-theatres-page .cinema-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(34, 211, 238, .35);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, .17);
+        }
+
+        .admin-theatres-page .cinema-card:hover::before {
+            opacity: 1;
+        }
+
+        .admin-theatres-page .card-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+
+            color: rgba(167, 181, 220, .40);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .admin-theatres-page .card-icon {
+            display: grid;
+            place-items: center;
+
+            width: 51px;
+            height: 51px;
+            margin-bottom: 20px;
+
+            border: 1px solid rgba(34, 211, 238, .19);
+            border-radius: 15px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .10),
+                rgba(139, 92, 246, .12)
+            );
+
+            font-size: 23px;
+            transition: transform .22s ease;
+        }
+
+        .admin-theatres-page .cinema-card:hover .card-icon {
+            transform: scale(1.06);
+        }
+
+        .admin-theatres-page .cinema-card h3 {
+            overflow-wrap: anywhere;
+            margin: 0 0 17px;
+
+            color: var(--theatre-text);
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .admin-theatres-page .theatre-info {
+            display: grid;
+            gap: 12px;
+            width: 100%;
+            flex: 1;
+            margin-bottom: 23px;
+        }
+
+        .admin-theatres-page .theatre-info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            padding-bottom: 11px;
+            border-bottom: 1px solid rgba(139, 92, 246, .12);
+        }
+
+        .admin-theatres-page .theatre-info-icon {
+            display: grid;
+            place-items: center;
+
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(139, 92, 246, .16);
+            border-radius: 8px;
+            background: rgba(139, 92, 246, .06);
+
+            font-size: 12px;
+        }
+
+        .admin-theatres-page .theatre-info-text {
+            min-width: 0;
+            padding-top: 2px;
+        }
+
+        .admin-theatres-page .theatre-info-text small {
+            display: block;
+            margin-bottom: 5px;
+
+            color: #7886A7;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .7px;
+        }
+
+        .admin-theatres-page .theatre-info-text strong {
+            display: block;
+            overflow-wrap: anywhere;
+
+            color: #DCE6FF;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* Card actions */
+
+        .admin-theatres-page .theatre-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-wrap: wrap;
+            width: 100%;
+
+            padding-top: 16px;
+            border-top: 1px solid rgba(139, 92, 246, .15);
+        }
+
+        .admin-theatres-page .theatre-card-actions form {
+            margin: 0;
+        }
+
+        .admin-theatres-page .edit-theatre-button,
+        .admin-theatres-page .delete-theatre-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            min-height: 37px;
+            padding: 9px 12px;
+
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
+
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .admin-theatres-page .edit-theatre-button {
+            border: 1px solid rgba(34, 211, 238, .22);
+            background: rgba(34, 211, 238, .06);
+            color: var(--theatre-cyan);
+        }
+
+        .admin-theatres-page .edit-theatre-button:hover {
+            border-color: var(--theatre-cyan);
+            background: rgba(34, 211, 238, .13);
+        }
+
+        .admin-theatres-page .delete-theatre-button {
+            border: 1px solid rgba(248, 113, 113, .25);
+            background: rgba(248, 113, 113, .06);
+            color: #FCA5A5;
+        }
+
+        .admin-theatres-page .delete-theatre-button:hover {
+            border-color: #F87171;
+            background: rgba(248, 113, 113, .13);
+            color: #FEE2E2;
+        }
+
+        /* =========================================
+           EMPTY STATE
+        ========================================= */
+
+        .admin-theatres-page .no-movies-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 320px;
+            padding: 35px 20px;
+            text-align: center;
+
+            border: 1px dashed rgba(139, 92, 246, .30);
+            border-radius: 16px;
+            background: rgba(16, 22, 45, .40);
+        }
+
+        .admin-theatres-page .no-movies-message > div {
+            display: grid;
+            place-items: center;
+
+            width: 70px;
+            height: 70px;
+            margin-bottom: 20px;
+
+            border: 1px solid rgba(34, 211, 238, .19);
+            border-radius: 22px;
+            background: rgba(34, 211, 238, .06);
+
+            font-size: 31px;
+        }
+
+        .admin-theatres-page .no-movies-message h3 {
+            margin: 0 0 10px;
+            color: var(--theatre-text);
+            font-size: 20px;
+        }
+
+        .admin-theatres-page .no-movies-message p {
+            max-width: 380px;
+            margin: 0 0 23px;
+
+            color: var(--theatre-muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .admin-theatres-page .dashboard-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+
+            padding: 24px 5%;
+            border-top: 1px solid rgba(139, 92, 246, .18);
+            background: rgba(7, 11, 26, .6);
+
+            color: var(--theatre-muted);
+            font-size: 11px;
+        }
+
+        .admin-theatres-page .footer-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            color: var(--theatre-text);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .admin-theatres-page .footer-logo .logo-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            font-size: 17px;
+        }
+
+        .admin-theatres-page .dashboard-footer p {
+            margin: 0;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1050px) {
+            .admin-theatres-page .action-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-theatres-page .navbar {
+                padding-left: 3%;
+                padding-right: 3%;
+                gap: 13px;
+            }
+
+            .admin-theatres-page .nav-links a {
+                padding: 10px;
+            }
+
+            .admin-theatres-page .user-details {
+                display: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .admin-theatres-page .navbar {
+                position: relative;
+                flex-wrap: wrap;
+                padding: 14px 4%;
+                gap: 13px;
+            }
+
+            .admin-theatres-page .nav-links {
+                order: 3;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .admin-theatres-page .nav-links a {
+                flex-shrink: 0;
+            }
+
+            .admin-theatres-page .user-area {
+                margin-left: auto;
+            }
+
+            .admin-theatres-page .dashboard-container {
+                width: 92%;
+                padding-top: 25px;
+            }
+
+            .admin-theatres-page .dashboard-hero {
+                padding: 27px 21px;
+            }
+
+            .admin-theatres-page .hero-content h1 {
+                font-size: 32px;
+            }
+
+            .admin-theatres-page .dashboard-hero::after {
+                font-size: 53px;
+                letter-spacing: -3px;
+            }
+
+            .admin-theatres-page .content-section {
+                padding: 19px 14px;
+            }
+
+            .admin-theatres-page .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-theatres-page .cinema-card {
+                min-height: 280px;
+                padding: 21px;
+            }
+
+            .admin-theatres-page .dashboard-footer {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .admin-theatres-page *,
+            .admin-theatres-page *::before,
+            .admin-theatres-page *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-navbar.css') }}">
+</head>
+
+<body class="admin-theatres-page">
+
+    <!-- NAVBAR -->
+    {% include 'admin_navbar.html' %}
+
+    <!-- MAIN -->
+    <main class="dashboard-container">
+
+        <!-- PAGE HERO -->
+        <section class="dashboard-hero">
+
+            <div class="hero-content">
+
+                <div class="hero-label">
+                    <span class="live-dot"></span>
+                    THEATRE MANAGEMENT
+                </div>
+
+                <h1>
+                    Manage <span>Theatres.</span>
+                </h1>
+
+                <p>
+                    Organise your cinema locations, maintain theatre
+                    information, and manage the venues available
+                    throughout the CineBook platform.
+                </p>
+
+                <a href="{{ url_for('add_theatre') }}"
+                   class="gold-button">
+                    <span>+</span>
+                    Add New Theatre
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- THEATRE DATABASE -->
+        <section class="content-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <span>DATABASE RECORDS</span>
+                    <h2>All Theatres</h2>
+                    <p>View and manage your registered cinema locations.</p>
+                </div>
+
+                {% if theatres %}
+                    <div class="theatre-count">
+                        <strong>{{ theatres|length }}</strong>
+                        Theatres
+                    </div>
+                {% else %}
+                    <div class="theatre-count">
+                        <strong>0</strong>
+                        Theatres
+                    </div>
+                {% endif %}
+
+            </div>
+
+            {% if theatres %}
+
+                <div class="action-grid">
+
+                    {% for theatre in theatres %}
+
+                        <article class="cinema-card">
+
+                            <div class="card-number">
+                                {{ "%02d" | format(loop.index) }}
+                            </div>
+
+                            <div class="card-icon">🏢</div>
+
+                            <h3>{{ theatre.name }}</h3>
+
+                            <div class="theatre-info">
+
+                                <div class="theatre-info-row">
+
+                                    <div class="theatre-info-icon">#</div>
+
+                                    <div class="theatre-info-text">
+                                        <small>THEATRE ID</small>
+                                        <strong>{{ theatre.theatre_id }}</strong>
+                                    </div>
+
+                                </div>
+
+                                <div class="theatre-info-row">
+
+                                    <div class="theatre-info-icon">📍</div>
+
+                                    <div class="theatre-info-text">
+                                        <small>LOCATION</small>
+                                        <strong>{{ theatre.location }}</strong>
+                                    </div>
+
+                                </div>
+
+                                <div class="theatre-info-row">
+
+                                    <div class="theatre-info-icon">🌆</div>
+
+                                    <div class="theatre-info-text">
+                                        <small>CITY</small>
+                                        <strong>{{ theatre.city }}</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="theatre-card-actions">
+
+                                <a
+                                    href="{{ url_for('update_theatre', theatre_id=theatre.theatre_id) }}"
+                                    class="edit-theatre-button">
+                                    ✎ Edit Theatre
+                                </a>
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('delete_theatre', theatre_id=theatre.theatre_id) }}"
+                                    onsubmit="return confirm('Are you sure you want to delete this theatre?');">
+
+                                    <button
+                                        type="submit"
+                                        class="delete-theatre-button">
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <!-- EMPTY STATE -->
+                <div class="no-movies-message">
+
+                    <div>🏢</div>
+
+                    <h3>No Theatres Found</h3>
+
+                    <p>
+                        Your theatre database is currently empty.
+                        Add your first theatre to get started.
+                    </p>
+
+                    <a href="{{ url_for('add_theatre') }}"
+                       class="gold-button">
+                        <span>+</span>
+                        Add First Theatre
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="dashboard-footer">
+
+        <div class="footer-logo">
+            <span class="logo-mark">C</span>
+            CineBook
+        </div>
+
+        <p>Theatre Management</p>
+
+        <span>© 2026 CineBook</span>
+
+    </footer>
+
+</body>
+</html>

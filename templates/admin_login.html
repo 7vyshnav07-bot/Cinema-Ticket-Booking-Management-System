@@ -1,0 +1,773 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineBook | Admin Login</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =====================================
+           CINEBOOK ADMIN LOGIN
+        ===================================== */
+
+        .admin-login-page {
+            --login-bg: #070B1A;
+            --login-panel: #10162D;
+            --login-text: #F1F5FF;
+            --login-muted: #929FBE;
+            --login-cyan: #22D3EE;
+            --login-blue: #3B82F6;
+            --login-purple: #8B5CF6;
+
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--login-text);
+
+            background:
+                radial-gradient(
+                    ellipse at 12% 12%,
+                    rgba(59, 130, 246, .15),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    ellipse at 90% 85%,
+                    rgba(139, 92, 246, .14),
+                    transparent 35%
+                ),
+                var(--login-bg);
+        }
+
+        .admin-login-page *,
+        .admin-login-page *::before,
+        .admin-login-page *::after {
+            box-sizing: border-box;
+        }
+
+        .admin-login-page a {
+            text-decoration: none;
+        }
+
+        /* Main layout */
+
+        .admin-login-page .admin-login-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* =====================================
+           LEFT BRAND SECTION
+        ===================================== */
+
+        .admin-login-page .admin-brand-section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+
+            min-height: 100vh;
+            padding: 48px 8%;
+
+            border-right: 1px solid rgba(139, 92, 246, .18);
+
+            background:
+                radial-gradient(
+                    ellipse at 10% 85%,
+                    rgba(34, 211, 238, .09),
+                    transparent 40%
+                ),
+                radial-gradient(
+                    ellipse at 90% 10%,
+                    rgba(139, 92, 246, .14),
+                    transparent 38%
+                ),
+                linear-gradient(
+                    145deg,
+                    rgba(14, 22, 48, .97),
+                    rgba(7, 11, 26, .97)
+                );
+        }
+
+        .admin-login-page .admin-brand-section::before {
+            content: "";
+            position: absolute;
+            width: 390px;
+            height: 390px;
+            right: -190px;
+            bottom: -130px;
+
+            border: 1px solid rgba(34, 211, 238, .12);
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 0 35px rgba(34, 211, 238, .025),
+                0 0 0 75px rgba(139, 92, 246, .025);
+
+            pointer-events: none;
+        }
+
+        .admin-login-page .admin-brand-section::after {
+            content: "C";
+            position: absolute;
+            right: 4%;
+            bottom: 4%;
+
+            color: rgba(139, 92, 246, .045);
+            font-size: clamp(220px, 30vw, 440px);
+            font-weight: 800;
+            line-height: .9;
+
+            pointer-events: none;
+        }
+
+        .admin-login-page .admin-brand,
+        .admin-login-page .admin-intro,
+        .admin-login-page .admin-footer-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-login-page .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .admin-login-page .admin-logo {
+            display: grid;
+            place-items: center;
+            width: 53px;
+            height: 53px;
+            flex-shrink: 0;
+
+            border-radius: 16px;
+            background: linear-gradient(
+                135deg,
+                var(--login-cyan),
+                var(--login-blue)
+            );
+
+            color: #07111E;
+            font-size: 30px;
+            font-weight: 800;
+
+            box-shadow: 0 0 30px rgba(34, 211, 238, .16);
+        }
+
+        .admin-login-page .admin-brand h1 {
+            margin: 0;
+            color: var(--login-text);
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .admin-login-page .admin-brand h1 span {
+            color: var(--login-cyan);
+        }
+
+        .admin-login-page .admin-brand p {
+            margin: 6px 0 0;
+            color: var(--login-muted);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+        }
+
+        /* Intro */
+
+        .admin-login-page .admin-intro {
+            max-width: 540px;
+            margin: 55px 0;
+        }
+
+        .admin-login-page .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 13px;
+
+            border: 1px solid rgba(34, 211, 238, .20);
+            border-radius: 30px;
+            background: rgba(34, 211, 238, .06);
+
+            color: var(--login-cyan);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.3px;
+        }
+
+        .admin-login-page .admin-badge span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--login-cyan);
+            box-shadow: 0 0 12px rgba(34, 211, 238, .7);
+        }
+
+        .admin-login-page .admin-intro h2 {
+            margin: 27px 0 17px;
+            color: var(--login-text);
+            font-size: clamp(38px, 4.4vw, 58px);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.12;
+        }
+
+        .admin-login-page .admin-intro h2 strong {
+            display: block;
+            color: var(--login-cyan);
+            font-weight: 800;
+        }
+
+        .admin-login-page .admin-intro > p {
+            max-width: 420px;
+            margin: 0;
+
+            color: #AAB5D1;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        /* Feature indicators */
+
+        .admin-login-page .admin-feature-list {
+            display: grid;
+            gap: 14px;
+            margin-top: 33px;
+        }
+
+        .admin-login-page .admin-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #CBD5ED;
+            font-size: 12px;
+        }
+
+        .admin-login-page .admin-feature-icon {
+            display: grid;
+            place-items: center;
+            width: 31px;
+            height: 31px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 10px;
+            background: rgba(139, 92, 246, .08);
+
+            color: var(--login-cyan);
+            font-size: 13px;
+        }
+
+        .admin-login-page .admin-footer-text {
+            color: #7582A3;
+            font-size: 11px;
+            letter-spacing: .3px;
+        }
+
+        /* =====================================
+           RIGHT LOGIN SECTION
+        ===================================== */
+
+        .admin-login-page .admin-form-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 100vh;
+            padding: 45px 7%;
+        }
+
+        .admin-login-page .admin-login-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 36px;
+
+            border: 1px solid rgba(139, 92, 246, .25);
+            border-radius: 23px;
+
+            background:
+                radial-gradient(
+                    ellipse at 100% 0%,
+                    rgba(139, 92, 246, .08),
+                    transparent 42%
+                ),
+                rgba(16, 22, 45, .91);
+
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, .25),
+                inset 0 1px 0 rgba(255, 255, 255, .025);
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* Card heading */
+
+        .admin-login-page .admin-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-login-page .admin-lock {
+            display: grid;
+            place-items: center;
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .22);
+            border-radius: 16px;
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .10),
+                rgba(59, 130, 246, .10)
+            );
+
+            font-size: 23px;
+        }
+
+        .admin-login-page .admin-card-label {
+            margin: 0 0 7px;
+            color: var(--login-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+        }
+
+        .admin-login-page .admin-card-header h2 {
+            margin: 0;
+            color: var(--login-text);
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -.8px;
+        }
+
+        .admin-login-page .admin-card-description {
+            margin: 0 0 27px;
+            color: var(--login-muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* Error message */
+
+        .admin-login-page .admin-error {
+            margin-bottom: 20px;
+            padding: 13px 15px;
+
+            border: 1px solid rgba(248, 113, 113, .25);
+            border-radius: 10px;
+            background: rgba(248, 113, 113, .08);
+
+            color: #FCA5A5;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Form */
+
+        .admin-login-page .admin-login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 21px;
+        }
+
+        .admin-login-page .admin-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .admin-login-page .admin-form-group label {
+            color: #C6D0EA;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .admin-login-page .admin-form-group input {
+            width: 100%;
+            min-height: 49px;
+            padding: 13px 15px;
+
+            border: 1px solid rgba(139, 92, 246, .24);
+            border-radius: 11px;
+            outline: none;
+
+            background: rgba(7, 11, 26, .65);
+            color: var(--login-text);
+
+            font-family: inherit;
+            font-size: 12px;
+
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .admin-login-page .admin-form-group input::placeholder {
+            color: #687695;
+        }
+
+        .admin-login-page .admin-form-group input:hover {
+            border-color: rgba(139, 92, 246, .45);
+        }
+
+        .admin-login-page .admin-form-group input:focus {
+            border-color: var(--login-cyan);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, .08);
+        }
+
+        /* Submit button */
+
+        .admin-login-page .admin-submit-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+
+            width: 100%;
+            min-height: 51px;
+            margin-top: 5px;
+            padding: 12px 17px;
+
+            border: 0;
+            border-radius: 11px;
+
+            background: linear-gradient(
+                110deg,
+                var(--login-cyan),
+                var(--login-blue) 60%,
+                var(--login-purple)
+            );
+
+            color: #07111E;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, .15);
+
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .admin-login-page .admin-submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, .25);
+        }
+
+        .admin-login-page .admin-submit-button:active {
+            transform: translateY(0);
+        }
+
+        .admin-login-page .admin-arrow {
+            display: grid;
+            place-items: center;
+            width: 27px;
+            height: 27px;
+
+            border-radius: 8px;
+            background: rgba(7, 11, 26, .12);
+
+            font-size: 17px;
+            transition: transform .2s ease;
+        }
+
+        .admin-login-page .admin-submit-button:hover .admin-arrow {
+            transform: translateX(3px);
+        }
+
+        /* Bottom links */
+
+        .admin-login-page .admin-card-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 11px;
+
+            margin-top: 26px;
+            padding-top: 22px;
+
+            border-top: 1px solid rgba(139, 92, 246, .16);
+
+            color: #586785;
+            font-size: 10px;
+        }
+
+        .admin-login-page .admin-card-links a {
+            color: #AAB5D1;
+            transition: color .2s ease;
+        }
+
+        .admin-login-page .admin-card-links a:hover {
+            color: var(--login-cyan);
+        }
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 900px) {
+            .admin-login-page .admin-login-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-login-page .admin-brand-section {
+                min-height: auto;
+                padding: 30px 7%;
+                border-right: 0;
+                border-bottom: 1px solid rgba(139, 92, 246, .18);
+            }
+
+            .admin-login-page .admin-intro {
+                margin: 38px 0;
+            }
+
+            .admin-login-page .admin-intro h2 {
+                font-size: 42px;
+            }
+
+            .admin-login-page .admin-feature-list {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .admin-login-page .admin-feature {
+                align-items: flex-start;
+                font-size: 10px;
+                line-height: 1.6;
+            }
+
+            .admin-login-page .admin-footer-text {
+                margin-top: 15px;
+            }
+
+            .admin-login-page .admin-form-section {
+                min-height: auto;
+                padding: 45px 6%;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .admin-login-page .admin-brand-section {
+                padding: 25px 6%;
+            }
+
+            .admin-login-page .admin-intro {
+                margin: 32px 0;
+            }
+
+            .admin-login-page .admin-intro h2 {
+                font-size: 36px;
+                letter-spacing: -1.3px;
+            }
+
+            .admin-login-page .admin-intro > p {
+                font-size: 12px;
+            }
+
+            .admin-login-page .admin-feature-list {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-login-page .admin-feature {
+                align-items: center;
+                font-size: 11px;
+            }
+
+            .admin-login-page .admin-form-section {
+                padding: 30px 5%;
+            }
+
+            .admin-login-page .admin-login-card {
+                padding: 25px 21px;
+                border-radius: 18px;
+            }
+
+            .admin-login-page .admin-card-header h2 {
+                font-size: 24px;
+            }
+
+            .admin-login-page .admin-card-links {
+                gap: 8px;
+                font-size: 9px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .admin-login-page *,
+            .admin-login-page *::before,
+            .admin-login-page *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-login-page">
+
+    <div class="admin-login-wrapper">
+
+        <!-- LEFT BRAND SECTION -->
+        <section class="admin-brand-section">
+
+            <div class="admin-brand">
+
+                <div class="admin-logo">C</div>
+
+                <div>
+                    <h1>Cine<span>Book</span></h1>
+                    <p>ADMINISTRATION</p>
+                </div>
+
+            </div>
+
+            <div class="admin-intro">
+
+                <div class="admin-badge">
+                    <span></span>
+                    SECURE ADMIN AREA
+                </div>
+
+                <h2>
+                    Manage the
+                    <strong>Cinema.</strong>
+                </h2>
+
+                <p>
+                    Your cinema management workspace.
+                    Control movies, theatres, shows, bookings
+                    and customers through one streamlined dashboard.
+                </p>
+
+                <div class="admin-feature-list">
+
+                    <div class="admin-feature">
+                        <span class="admin-feature-icon">🎬</span>
+                        Movie and theatre management
+                    </div>
+
+                    <div class="admin-feature">
+                        <span class="admin-feature-icon">🎟️</span>
+                        Show and booking operations
+                    </div>
+
+                    <div class="admin-feature">
+                        <span class="admin-feature-icon">📊</span>
+                        Database analytics and reports
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="admin-footer-text">
+                © 2026 CineBook Management System
+            </div>
+
+        </section>
+
+        <!-- RIGHT LOGIN SECTION -->
+        <section class="admin-form-section">
+
+            <div class="admin-login-card">
+
+                <!-- HEADER -->
+                <div class="admin-card-header">
+
+                    <div class="admin-lock">🔐</div>
+
+                    <div>
+                        <p class="admin-card-label">ADMIN ACCESS</p>
+                        <h2>Welcome Back</h2>
+                    </div>
+
+                </div>
+
+                <p class="admin-card-description">
+                    Sign in with your administrator credentials
+                    to access the CineBook control panel.
+                </p>
+
+                <!-- ERROR MESSAGE -->
+                {% if error %}
+                    <div class="admin-error">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <!-- LOGIN FORM -->
+                <form method="POST" class="admin-login-form">
+
+                    <div class="admin-form-group">
+                        <label for="username">ADMIN USERNAME</label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            required>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="password">ADMIN PASSWORD</label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required>
+                    </div>
+
+                    <button type="submit" class="admin-submit-button">
+                        <span>Login to Admin Panel</span>
+                        <span class="admin-arrow">→</span>
+                    </button>
+
+                </form>
+
+                <!-- NAVIGATION LINKS -->
+                <div class="admin-card-links">
+
+                    <a href="{{ url_for('login') }}">
+                        Customer Login
+                    </a>
+
+                    <span>•</span>
+
+                    <a href="{{ url_for('index') }}">
+                        ← Back to Home
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</body>
+</html>

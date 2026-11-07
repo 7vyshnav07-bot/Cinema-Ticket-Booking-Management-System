@@ -1,0 +1,530 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Update User | CineBook</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================
+           UPDATE USER PAGE
+        ========================================= */
+
+        .update-user-page {
+            --user-bg: #070B1A;
+            --user-panel: #10162D;
+            --user-border: rgba(139, 92, 246, .23);
+            --user-text: #F1F5FF;
+            --user-muted: #929FBE;
+            --user-cyan: #22D3EE;
+            --user-blue: #3B82F6;
+            --user-purple: #8B5CF6;
+
+            min-height: 100vh;
+            margin: 0;
+            padding: 35px 20px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            color: var(--user-text);
+            font-family: 'Inter', sans-serif;
+
+            background:
+                radial-gradient(
+                    ellipse at 10% 10%,
+                    rgba(59, 130, 246, .12),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    ellipse at 90% 90%,
+                    rgba(139, 92, 246, .13),
+                    transparent 35%
+                ),
+                var(--user-bg);
+        }
+
+        .update-user-page *,
+        .update-user-page *::before,
+        .update-user-page *::after {
+            box-sizing: border-box;
+        }
+
+        .update-user-page a {
+            text-decoration: none;
+        }
+
+        .update-user-page .user-card {
+            position: relative;
+            overflow: hidden;
+
+            width: min(520px, 100%);
+            padding: 40px;
+
+            border: 1px solid var(--user-border);
+            border-radius: 22px;
+
+            background: rgba(16, 22, 45, .86);
+
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, .30),
+                0 0 55px rgba(59, 130, 246, .04);
+
+            backdrop-filter: blur(18px);
+        }
+
+        .update-user-page .user-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 3px;
+
+            background: linear-gradient(
+                90deg,
+                var(--user-cyan),
+                var(--user-blue),
+                var(--user-purple)
+            );
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .update-user-page .page-icon {
+            display: grid;
+            place-items: center;
+
+            width: 55px;
+            height: 55px;
+            margin-bottom: 23px;
+
+            border: 1px solid rgba(34, 211, 238, .20);
+            border-radius: 16px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .12),
+                rgba(139, 92, 246, .14)
+            );
+
+            font-size: 25px;
+        }
+
+        .update-user-page .auth-heading {
+            margin-bottom: 30px;
+        }
+
+        .update-user-page .auth-label {
+            display: inline-block;
+
+            margin: 0 0 13px;
+            padding: 8px 11px;
+
+            border: 1px solid rgba(34, 211, 238, .17);
+            border-radius: 7px;
+
+            background: rgba(34, 211, 238, .05);
+
+            color: var(--user-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+        }
+
+        .update-user-page .auth-heading h2 {
+            margin: 0;
+
+            color: var(--user-text);
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .update-user-page .auth-heading > p:last-child {
+            margin: 12px 0 0;
+
+            color: var(--user-muted);
+            font-size: 11px;
+            line-height: 1.9;
+        }
+
+        .update-user-page .user-reference {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 26px;
+            padding: 14px;
+
+            border: 1px solid rgba(139, 92, 246, .16);
+            border-radius: 12px;
+
+            background: rgba(7, 11, 26, .30);
+        }
+
+        .update-user-page .user-avatar {
+            display: grid;
+            place-items: center;
+
+            width: 39px;
+            height: 39px;
+            flex-shrink: 0;
+
+            border-radius: 12px;
+
+            background: linear-gradient(
+                135deg,
+                var(--user-cyan),
+                var(--user-blue)
+            );
+
+            color: #07111E;
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .update-user-page .reference-label {
+            display: block;
+            margin-bottom: 5px;
+
+            color: var(--user-muted);
+            font-size: 9px;
+        }
+
+        .update-user-page .reference-value {
+            display: block;
+
+            color: var(--user-text);
+            font-size: 12px;
+            font-weight: 700;
+
+            overflow-wrap: anywhere;
+        }
+
+        /* =========================================
+           FORM FIELDS
+        ========================================= */
+
+        .update-user-page .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 21px;
+        }
+
+        .update-user-page .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .update-user-page .form-group label {
+            color: #DCE5FA;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .update-user-page .input-wrap {
+            position: relative;
+        }
+
+        .update-user-page .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+
+            transform: translateY(-50%);
+
+            color: #8190B4;
+            font-size: 14px;
+
+            pointer-events: none;
+        }
+
+        .update-user-page .form-group input {
+            width: 100%;
+            min-height: 49px;
+            padding: 13px 15px 13px 43px;
+
+            outline: none;
+
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 10px;
+
+            background: rgba(7, 11, 26, .42);
+
+            color: var(--user-text);
+            font-family: inherit;
+            font-size: 11px;
+
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .update-user-page .form-group input:hover {
+            border-color: rgba(139, 92, 246, .45);
+        }
+
+        .update-user-page .form-group input:focus {
+            border-color: var(--user-cyan);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, .08);
+        }
+
+        .update-user-page .form-group input::placeholder {
+            color: #687695;
+        }
+
+        /* =========================================
+           BUTTONS
+        ========================================= */
+
+        .update-user-page .auth-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+
+            width: 100%;
+            min-height: 49px;
+            margin-top: 4px;
+            padding: 14px 18px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: linear-gradient(
+                105deg,
+                var(--user-cyan),
+                var(--user-blue) 60%,
+                var(--user-purple)
+            );
+
+            color: #07111E;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            box-shadow: 0 9px 25px rgba(59, 130, 246, .14);
+
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .update-user-page .auth-button span {
+            font-size: 17px;
+            transition: transform .2s ease;
+        }
+
+        .update-user-page .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 13px 30px rgba(59, 130, 246, .24);
+        }
+
+        .update-user-page .auth-button:hover span {
+            transform: translateX(4px);
+        }
+
+        .update-user-page .auth-footer {
+            display: flex;
+            justify-content: center;
+
+            margin-top: 25px;
+            padding-top: 21px;
+
+            border-top: 1px solid rgba(139, 92, 246, .16);
+        }
+
+        .update-user-page .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            color: var(--user-muted);
+            font-size: 11px;
+            font-weight: 600;
+
+            transition: color .2s ease;
+        }
+
+        .update-user-page .back-link:hover {
+            color: var(--user-cyan);
+        }
+
+        .update-user-page .page-footer {
+            margin-top: 24px;
+
+            color: #647291;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 520px) {
+            .update-user-page {
+                padding: 20px 14px;
+            }
+
+            .update-user-page .user-card {
+                padding: 27px 22px;
+                border-radius: 18px;
+            }
+
+            .update-user-page .auth-heading h2 {
+                font-size: 26px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .update-user-page *,
+            .update-user-page *::before,
+            .update-user-page *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="update-user-page">
+
+    <main class="user-card">
+
+        <!-- HEADER -->
+
+        <div class="page-icon">👤</div>
+
+        <div class="auth-heading">
+
+            <p class="auth-label">
+                USER MANAGEMENT
+            </p>
+
+            <h2>Update User</h2>
+
+            <p>
+                Modify the user's account information
+                and keep their details up to date.
+            </p>
+
+        </div>
+
+        <!-- USER REFERENCE -->
+
+        <div class="user-reference">
+
+            <div class="user-avatar">
+                {{ user.name[0] | upper if user.name else 'U' }}
+            </div>
+
+            <div>
+                <span class="reference-label">
+                    EDITING USER
+                </span>
+
+                <span class="reference-value">
+                    {{ user.name }}
+                </span>
+            </div>
+
+        </div>
+
+        <!-- UPDATE FORM -->
+
+        <form
+            method="POST"
+            action="{{ url_for('update_user', user_id=user.user_id) }}"
+            class="auth-form"
+        >
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <div class="input-wrap">
+
+                   
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ user.name }}"
+                        placeholder="Enter full name"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <div class="input-wrap">
+
+                    
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ user.email }}"
+                        placeholder="Enter email address"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <button type="submit" class="auth-button">
+                <span>Update User</span>
+                <span>→</span>
+            </button>
+
+        </form>
+
+        <!-- BACK LINK -->
+
+        <div class="auth-footer">
+
+            <a href="{{ url_for('users') }}" class="back-link">
+                <span>←</span>
+                Back to Users
+            </a>
+
+        </div>
+
+    </main>
+
+    <footer class="page-footer">
+        © 2026 CineBook · User Management
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,319 @@
+
+{% extends "base.html" %}
+
+{% block title %}Manage Seats | CineBook{% endblock %}
+
+{% block head %}
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+        margin-bottom: 8px;
+        font-size: 30px;
+    }
+
+    .subtitle {
+        color: #929FBE;
+        font-size: 14px;
+    }
+
+    .add-btn {
+        background: linear-gradient(135deg, #22D3EE, #3B82F6);
+        color: #070B1A;
+        padding: 12px 18px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 18px;
+        margin-bottom: 26px;
+    }
+
+    .stat-card {
+        background: #10162D;
+        border: 1px solid #263454;
+        border-radius: 14px;
+        padding: 22px;
+    }
+
+    .stat-card p {
+        color: #929FBE;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .stat-card h2 {
+        font-size: 28px;
+        color: #22D3EE;
+        margin: 0;
+    }
+
+    .table-card {
+        background: #10162D;
+        border: 1px solid #263454;
+        border-radius: 14px;
+        padding: 22px;
+        overflow-x: auto;
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 12px;
+    }
+
+    .table-header h2 {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .search-input {
+        width: 260px;
+        max-width: 100%;
+        padding: 11px 14px;
+        border-radius: 8px;
+        border: 1px solid #344363;
+        background: #070B1A;
+        color: #F1F5FF;
+        outline: none;
+    }
+
+    .search-input:focus {
+        border-color: #22D3EE;
+    }
+
+    .seat-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 720px;
+    }
+
+    .seat-table th {
+        color: #929FBE;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        padding: 16px 12px;
+        border-bottom: 1px solid #263454;
+    }
+
+    .seat-table td {
+        padding: 16px 12px;
+        border-bottom: 1px solid #202A45;
+        font-size: 14px;
+    }
+
+    .seat-table tbody tr:hover {
+        background: #151D38;
+    }
+
+    .seat-number {
+        font-weight: bold;
+        color: #F1F5FF;
+    }
+
+    .seat-type {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 20px;
+        background: #20264A;
+        color: #A5B4FC;
+        font-size: 12px;
+    }
+
+    .delete-btn {
+        border: 1px solid #7F1D35;
+        background: #351522;
+        color: #FDA4AF;
+        padding: 8px 12px;
+        border-radius: 7px;
+        cursor: pointer;
+    }
+
+    .delete-btn:hover {
+        background: #571B30;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 45px 15px;
+        color: #929FBE;
+    }
+
+    .empty-state .symbol {
+        font-size: 40px;
+        margin-bottom: 14px;
+    }
+
+    .empty-state h3 {
+        color: #F1F5FF;
+        margin-bottom: 8px;
+    }
+
+    .flash-message {
+        margin-bottom: 18px;
+        padding: 13px 16px;
+        border-radius: 8px;
+        background: #172C43;
+        border: 1px solid #22D3EE;
+    }
+
+    @media (max-width: 600px) {
+        .page-header h1 {
+            font-size: 24px;
+        }
+
+        .table-card {
+            padding: 14px;
+        }
+
+        .search-input {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <h1>Manage Seats</h1>
+        <p class="subtitle">
+            Organize cinema seats and assign them to screens.
+        </p>
+    </div>
+
+    <a href="{{ url_for('add_seat') }}" class="add-btn">
+        + Add New Seat
+    </a>
+</section>
+
+<section class="stats">
+    <div class="stat-card">
+        <p>Total Seats</p>
+        <h2>{{ seats|length }}</h2>
+    </div>
+
+    <div class="stat-card">
+        <p>Assigned Screens</p>
+        <h2>{{ seats|map(attribute='screen_id')|unique|list|length }}</h2>
+    </div>
+</section>
+
+<section class="table-card">
+    <div class="table-header">
+        <h2>Seat Inventory</h2>
+
+        <input
+            type="text"
+            id="seatSearch"
+            class="search-input"
+            placeholder="Search seat, screen, theatre..."
+            oninput="filterSeats()"
+        >
+    </div>
+
+    {% if seats %}
+    <table class="seat-table" id="seatsTable">
+        <thead>
+            <tr>
+                <th>Seat ID</th>
+                <th>Seat Number</th>
+                <th>Row</th>
+                <th>Seat Type</th>
+                <th>Screen</th>
+                <th>Theatre</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for seat in seats %}
+            <tr>
+                <td>#{{ seat.seat_id }}</td>
+
+                <td class="seat-number">
+                    {{ seat.seat_number }}
+                </td>
+
+                <td>{{ seat.row_label or '-' }}</td>
+
+                <td>
+                    <span class="seat-type">
+                        {{ seat.seat_type or 'Standard' }}
+                    </span>
+                </td>
+
+                <td>{{ seat.screen_name }}</td>
+
+                <td>{{ seat.theatre_name }}</td>
+
+                <td>
+                    <form
+                        method="POST"
+                        action="{{ url_for('delete_seat', seat_id=seat.seat_id) }}"
+                        onsubmit="return confirm('Are you sure you want to delete this seat?');"
+                    >
+                        <button type="submit" class="delete-btn">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="noResults" class="empty-state" style="display:none">
+        No matching seats found.
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <div class="symbol">▦</div>
+        <h3>No seats added yet</h3>
+        <p>Add seats and assign them to a cinema screen.</p>
+    </div>
+    {% endif %}
+</section>
+
+<script>
+function filterSeats() {
+    const search = document
+        .getElementById("seatSearch")
+        .value.toLowerCase();
+
+    const rows = document.querySelectorAll("#seatsTable tbody tr");
+    let visible = 0;
+
+    rows.forEach(row => {
+        const matches = row.innerText.toLowerCase().includes(search);
+        row.style.display = matches ? "" : "none";
+
+        if (matches) visible++;
+    });
+
+    const noResults = document.getElementById("noResults");
+
+    if (noResults) {
+        noResults.style.display = visible === 0 ? "block" : "none";
+    }
+}
+</script>
+
+{% endblock %}

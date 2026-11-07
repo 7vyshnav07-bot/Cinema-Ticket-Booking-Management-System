@@ -1,0 +1,674 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineBook | Add Movie</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* ========================================
+           CINEBOOK - ADD MOVIE
+           Unified futuristic theme
+        ======================================== */
+
+        .admin-movies-page {
+            --movie-bg: #070B1A;
+            --movie-panel: #10162D;
+            --movie-border: rgba(139, 92, 246, 0.24);
+            --movie-text: #F1F5FF;
+            --movie-muted: #929FBE;
+            --movie-cyan: #22D3EE;
+            --movie-blue: #3B82F6;
+            --movie-purple: #8B5CF6;
+
+            min-height: 100vh;
+            color: var(--movie-text);
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(
+                    ellipse at 10% 0%,
+                    rgba(59, 130, 246, 0.10),
+                    transparent 36%
+                ),
+                radial-gradient(
+                    ellipse at 90% 12%,
+                    rgba(139, 92, 246, 0.10),
+                    transparent 32%
+                ),
+                var(--movie-bg);
+        }
+
+        .admin-movies-page *,
+        .admin-movies-page *::before,
+        .admin-movies-page *::after {
+            box-sizing: border-box;
+        }
+
+        .admin-movies-page .admin-add-movie-container {
+            width: min(1000px, 92%);
+            margin: 0 auto;
+            padding: 42px 0 65px;
+        }
+
+        /* Page heading */
+
+        .admin-movies-page .add-movie-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 22px;
+            margin-bottom: 28px;
+        }
+
+        .admin-movies-page .admin-section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 14px;
+            color: var(--movie-cyan);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+        }
+
+        .admin-movies-page .admin-section-label::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--movie-cyan);
+            box-shadow: 0 0 12px rgba(34, 211, 238, .55);
+        }
+
+        .admin-movies-page .add-movie-header h1 {
+            margin: 0;
+            color: var(--movie-text);
+            font-size: clamp(30px, 4vw, 42px);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -1.4px;
+        }
+
+        .admin-movies-page .add-movie-header h1 span {
+            color: var(--movie-cyan);
+        }
+
+        .admin-movies-page .add-movie-header p {
+            margin: 12px 0 0;
+            color: var(--movie-muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .admin-movies-page .back-movies-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 17px;
+            border: 1px solid var(--movie-border);
+            border-radius: 11px;
+            color: #D7DDF4;
+            background: rgba(139, 92, 246, .06);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s ease;
+        }
+
+        .admin-movies-page .back-movies-button:hover {
+            border-color: var(--movie-cyan);
+            color: var(--movie-cyan);
+            background: rgba(34, 211, 238, .06);
+            transform: translateY(-2px);
+        }
+
+        /* Form card */
+
+        .admin-movies-page .add-movie-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--movie-border);
+            border-radius: 22px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18, 26, 52, .97),
+                    rgba(11, 17, 37, .98)
+                );
+            box-shadow: 0 20px 65px rgba(0, 0, 0, .22);
+        }
+
+        .admin-movies-page .add-movie-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                var(--movie-cyan),
+                var(--movie-blue),
+                var(--movie-purple)
+            );
+        }
+
+        .admin-movies-page .add-movie-card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 27px 30px;
+            border-bottom: 1px solid rgba(139, 92, 246, .16);
+            background: rgba(139, 92, 246, .035);
+        }
+
+        .admin-movies-page .add-movie-icon {
+            display: grid;
+            place-items: center;
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+            border: 1px solid rgba(34, 211, 238, .20);
+            border-radius: 15px;
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .12),
+                rgba(139, 92, 246, .15)
+            );
+            font-size: 24px;
+        }
+
+        .admin-movies-page .add-movie-card-header h2 {
+            margin: 0;
+            color: var(--movie-text);
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: -.4px;
+        }
+
+        .admin-movies-page .add-movie-card-header p {
+            margin: 6px 0 0;
+            color: var(--movie-muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* Form */
+
+        .admin-movies-page .movie-form {
+            padding: 30px;
+        }
+
+        .admin-movies-page .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .admin-movies-page .form-field {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            gap: 10px;
+            margin-bottom: 23px;
+        }
+
+        .admin-movies-page .form-field label {
+            color: #E3E9FC;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .admin-movies-page .form-field label span {
+            color: var(--movie-cyan);
+        }
+
+        .admin-movies-page .form-field input,
+        .admin-movies-page .form-field textarea,
+        .admin-movies-page .form-field select {
+            width: 100%;
+            min-width: 0;
+            padding: 14px 15px;
+            outline: none;
+            border: 1px solid rgba(139, 92, 246, .22);
+            border-radius: 11px;
+            color: var(--movie-text);
+            background: #0A1024;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease,
+                background .2s ease;
+        }
+
+        .admin-movies-page .form-field input {
+            min-height: 47px;
+        }
+
+        .admin-movies-page .form-field textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .admin-movies-page .form-field input::placeholder,
+        .admin-movies-page .form-field textarea::placeholder {
+            color: #7180A3;
+        }
+
+        .admin-movies-page .form-field input:focus,
+        .admin-movies-page .form-field textarea:focus,
+        .admin-movies-page .form-field select:focus {
+            border-color: var(--movie-cyan);
+            background: #0B132A;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, .07);
+        }
+
+        .admin-movies-page .form-field input[type="date"] {
+            color-scheme: dark;
+        }
+
+        .admin-movies-page .form-field input[type="number"] {
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .admin-movies-page .form-field input[type="number"]::-webkit-inner-spin-button,
+        .admin-movies-page .form-field input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .admin-movies-page .input-with-unit {
+            position: relative;
+        }
+
+        .admin-movies-page .input-with-unit input {
+            padding-right: 92px;
+        }
+
+        .admin-movies-page .input-with-unit > span {
+            position: absolute;
+            top: 50%;
+            right: 14px;
+            transform: translateY(-50%);
+            color: var(--movie-cyan);
+            font-size: 11px;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .admin-movies-page .form-field small {
+            color: var(--movie-muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        /* Error */
+
+        .admin-movies-page .movie-form-error {
+            margin: 25px 30px 0;
+            padding: 14px 16px;
+            border: 1px solid rgba(244, 114, 182, .25);
+            border-radius: 11px;
+            background: rgba(244, 114, 182, .07);
+            color: #F9A8D4;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* Form buttons */
+
+        .admin-movies-page .movie-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(139, 92, 246, .16);
+        }
+
+        .admin-movies-page .cancel-movie-button,
+        .admin-movies-page .save-movie-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            min-height: 45px;
+            padding: 12px 19px;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .admin-movies-page .cancel-movie-button {
+            border: 1px solid rgba(139, 92, 246, .25);
+            background: rgba(139, 92, 246, .055);
+            color: #D2D8EF;
+        }
+
+        .admin-movies-page .cancel-movie-button:hover {
+            border-color: var(--movie-purple);
+            background: rgba(139, 92, 246, .12);
+            color: white;
+        }
+
+        .admin-movies-page .save-movie-button {
+            border: 1px solid transparent;
+            color: #07111E;
+            background: linear-gradient(
+                110deg,
+                var(--movie-cyan),
+                #60A5FA
+            );
+            box-shadow: 0 5px 20px rgba(34, 211, 238, .12);
+        }
+
+        .admin-movies-page .save-movie-button span {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .admin-movies-page .save-movie-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(34, 211, 238, .23);
+            filter: brightness(1.06);
+        }
+
+        .admin-movies-page .save-movie-button:active {
+            transform: translateY(0);
+        }
+
+        .admin-movies-page .save-movie-button:focus-visible,
+        .admin-movies-page .cancel-movie-button:focus-visible,
+        .admin-movies-page .back-movies-button:focus-visible {
+            outline: 2px solid var(--movie-cyan);
+            outline-offset: 4px;
+        }
+
+        /* Footer */
+
+        .admin-movies-page .admin-footer {
+            padding: 22px 15px;
+            border-top: 1px solid rgba(139, 92, 246, .16);
+            background: rgba(7, 11, 26, .55);
+            text-align: center;
+        }
+
+        .admin-movies-page .admin-footer p {
+            margin: 0;
+            color: var(--movie-muted);
+            font-size: 11px;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 700px) {
+            .admin-movies-page .admin-add-movie-container {
+                width: 92%;
+                padding: 28px 0 45px;
+            }
+
+            .admin-movies-page .add-movie-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .admin-movies-page .add-movie-header h1 {
+                font-size: 32px;
+            }
+
+            .admin-movies-page .add-movie-card-header {
+                padding: 22px 20px;
+            }
+
+            .admin-movies-page .movie-form {
+                padding: 23px 20px;
+            }
+
+            .admin-movies-page .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .admin-movies-page .movie-form-error {
+                margin: 22px 20px 0;
+            }
+
+            .admin-movies-page .movie-form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .admin-movies-page .cancel-movie-button,
+            .admin-movies-page .save-movie-button {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .admin-movies-page *,
+            .admin-movies-page *::before,
+            .admin-movies-page *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-navbar.css') }}">
+</head>
+
+<body class="admin-movies-page">
+
+    <!-- NAVBAR -->
+    {% include 'admin_navbar.html' %}
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-add-movie-container">
+
+        <!-- PAGE HEADER -->
+        <section class="add-movie-header">
+
+            <div>
+                <span class="admin-section-label">
+                    MOVIE MANAGEMENT
+                </span>
+
+                <h1>
+                    Add New <span>Movie</span>
+                </h1>
+
+                <p>
+                    Add a new movie to the CineBook database.
+                    Complete the details below to publish it to your catalogue.
+                </p>
+            </div>
+
+            <a href="{{ url_for('admin_movies') }}"
+               class="back-movies-button">
+                ← Back to Movies
+            </a>
+
+        </section>
+
+        <!-- FORM CARD -->
+        <section class="add-movie-card">
+
+            <div class="add-movie-card-header">
+
+                <div class="add-movie-icon">🎬</div>
+
+                <div>
+                    <h2>Movie Details</h2>
+                    <p>
+                        Provide accurate movie information for the CineBook catalogue.
+                    </p>
+                </div>
+
+            </div>
+
+            {% if error %}
+            <div class="movie-form-error" role="alert">
+                ⚠️ {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" class="movie-form">
+
+                <!-- TITLE -->
+                <div class="form-field">
+                    <label for="title">
+                        Movie Title <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="Enter movie title"
+                        autocomplete="off"
+                        required>
+                </div>
+
+                <!-- GENRE + LANGUAGE -->
+                <div class="form-row">
+
+                    <div class="form-field">
+                        <label for="genre">
+                            Genre <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="genre"
+                            name="genre"
+                            placeholder="Example: Action"
+                            required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="language">
+                            Language <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="language"
+                            name="language"
+                            placeholder="Example: English"
+                            required>
+                    </div>
+
+                </div>
+
+                <!-- DURATION + RELEASE DATE -->
+                <div class="form-row">
+
+                    <div class="form-field">
+                        <label for="duration">
+                            Duration <span>*</span>
+                        </label>
+
+                        <div class="input-with-unit">
+                            <input
+                                type="number"
+                                id="duration"
+                                name="duration"
+                                min="1"
+                                step="1"
+                                placeholder="Example: 150"
+                                required>
+
+                            <span>minutes</span>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="release_date">
+                            Release Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="release_date"
+                            name="release_date">
+                    </div>
+
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="form-field">
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="6"
+                        placeholder="Enter movie description"></textarea>
+                </div>
+
+                <!-- POSTER URL -->
+                <div class="form-field">
+                    <label for="poster_url">
+                        Poster Image URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="poster_url"
+                        name="poster_url"
+                        placeholder="https://example.com/movie-poster.jpg">
+
+                    <small>
+                        Optional. Provide a direct image URL to display the movie poster.
+                    </small>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="movie-form-actions">
+
+                    <a href="{{ url_for('admin_movies') }}"
+                       class="cancel-movie-button">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="save-movie-button">
+                        <span>＋</span>
+                        Add Movie
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="admin-footer">
+        <p>© 2026 CineBook. Admin Management System.</p>
+    </footer>
+
+</body>
+</html>

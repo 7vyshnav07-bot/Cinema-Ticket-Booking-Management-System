@@ -1,0 +1,1281 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Users | CineBook Admin</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CINEBOOK ADMIN USERS PAGE
+        ========================================= */
+
+        .admin-users-page {
+            --users-bg: #070B1A;
+            --users-panel: #10162D;
+            --users-border: rgba(139, 92, 246, .20);
+            --users-text: #F1F5FF;
+            --users-muted: #929FBE;
+            --users-cyan: #22D3EE;
+            --users-blue: #3B82F6;
+            --users-purple: #8B5CF6;
+            --users-red: #FB7185;
+
+            min-height: 100vh;
+            margin: 0;
+
+            color: var(--users-text);
+            font-family: 'Inter', sans-serif;
+
+            background:
+                radial-gradient(
+                    ellipse at 0% 0%,
+                    rgba(59, 130, 246, .08),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    ellipse at 100% 60%,
+                    rgba(139, 92, 246, .07),
+                    transparent 30%
+                ),
+                var(--users-bg);
+        }
+
+        .admin-users-page *,
+        .admin-users-page *::before,
+        .admin-users-page *::after {
+            box-sizing: border-box;
+        }
+
+        .admin-users-page a {
+            text-decoration: none;
+        }
+
+        /* =========================================
+           ADMIN NAVBAR
+        ========================================= */
+
+        .admin-users-page .admin-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+
+            min-height: 76px;
+            padding: 12px 4%;
+
+            border-bottom: 1px solid rgba(139, 92, 246, .18);
+            background: rgba(7, 11, 26, .94);
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .admin-users-page .admin-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+
+            color: var(--users-text);
+        }
+
+        .admin-users-page .admin-logo-mark {
+            display: grid;
+            place-items: center;
+
+            width: 39px;
+            height: 39px;
+
+            border-radius: 12px;
+
+            background: linear-gradient(
+                135deg,
+                var(--users-cyan),
+                var(--users-blue)
+            );
+
+            color: #07111E;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .admin-users-page .admin-logo-text {
+            color: var(--users-text);
+            font-size: 19px;
+            font-weight: 900;
+            letter-spacing: -.8px;
+        }
+
+        .admin-users-page .admin-logo-text span {
+            color: var(--users-cyan);
+        }
+
+        .admin-users-page .admin-nav-divider {
+            width: 1px;
+            height: 30px;
+            flex-shrink: 0;
+
+            background: rgba(139, 92, 246, .25);
+        }
+
+        .admin-users-page .admin-nav-title {
+            color: var(--users-muted);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+            white-space: nowrap;
+        }
+
+        .admin-users-page .admin-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .admin-users-page .admin-nav-links a {
+            padding: 10px 11px;
+
+            border: 1px solid transparent;
+            border-radius: 9px;
+
+            color: var(--users-muted);
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .admin-users-page .admin-nav-links a:hover {
+            color: var(--users-cyan);
+            background: rgba(34, 211, 238, .05);
+        }
+
+        .admin-users-page .admin-nav-links a.active {
+            border-color: rgba(34, 211, 238, .16);
+            background: rgba(34, 211, 238, .07);
+            color: var(--users-cyan);
+        }
+
+        .admin-users-page .admin-nav-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .admin-users-page .admin-avatar {
+            display: grid;
+            place-items: center;
+
+            width: 35px;
+            height: 35px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .25);
+            border-radius: 11px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .18),
+                rgba(139, 92, 246, .22)
+            );
+
+            color: var(--users-cyan);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .admin-users-page .admin-user-info strong {
+            display: block;
+            max-width: 125px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            color: var(--users-text);
+            font-size: 10px;
+        }
+
+        .admin-users-page .admin-user-info small {
+            display: block;
+            margin-top: 4px;
+
+            color: var(--users-muted);
+            font-size: 9px;
+        }
+
+        .admin-users-page .admin-logout {
+            padding: 9px 11px;
+
+            border: 1px solid rgba(251, 113, 133, .20);
+            border-radius: 9px;
+
+            color: #FDA4AF;
+            font-size: 10px;
+            font-weight: 700;
+
+            transition: .2s ease;
+        }
+
+        .admin-users-page .admin-logout:hover {
+            border-color: rgba(251, 113, 133, .45);
+            background: rgba(251, 113, 133, .08);
+        }
+
+        /* =========================================
+           MAIN CONTENT
+        ========================================= */
+
+        .admin-users-page .users-container {
+            width: min(1380px, 92%);
+            margin: 0 auto;
+            padding: 42px 0 70px;
+        }
+
+        .admin-users-page .page-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            margin-bottom: 23px;
+
+            color: var(--users-muted);
+            font-size: 10px;
+        }
+
+        .admin-users-page .page-breadcrumb a {
+            color: var(--users-muted);
+            transition: color .2s ease;
+        }
+
+        .admin-users-page .page-breadcrumb a:hover {
+            color: var(--users-cyan);
+        }
+
+        .admin-users-page .page-breadcrumb span:last-child {
+            color: var(--users-cyan);
+        }
+
+        /* =========================================
+           PAGE HEADING
+        ========================================= */
+
+        .admin-users-page .page-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 22px;
+
+            margin-bottom: 30px;
+        }
+
+        .admin-users-page .heading-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            margin-bottom: 12px;
+
+            color: var(--users-cyan);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .admin-users-page .heading-label::before {
+            content: "";
+            width: 20px;
+            height: 2px;
+
+            border-radius: 3px;
+            background: var(--users-cyan);
+        }
+
+        .admin-users-page .page-heading h1 {
+            margin: 0;
+
+            color: var(--users-text);
+            font-size: clamp(28px, 3vw, 38px);
+            font-weight: 900;
+            letter-spacing: -1.4px;
+        }
+
+        .admin-users-page .page-heading h1 span {
+            color: var(--users-cyan);
+        }
+
+        .admin-users-page .page-heading p {
+            margin: 11px 0 0;
+
+            color: var(--users-muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .admin-users-page .heading-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 11px 14px;
+
+            border: 1px solid rgba(34, 211, 238, .16);
+            border-radius: 10px;
+
+            background: rgba(34, 211, 238, .045);
+
+            color: #A5F3FC;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .admin-users-page .status-dot {
+            width: 7px;
+            height: 7px;
+            flex-shrink: 0;
+
+            border-radius: 50%;
+            background: var(--users-cyan);
+            box-shadow: 0 0 10px rgba(34, 211, 238, .45);
+        }
+
+        /* =========================================
+           SUMMARY CARD
+        ========================================= */
+
+        .admin-users-page .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 17px;
+
+            margin-bottom: 27px;
+        }
+
+        .admin-users-page .summary-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            padding: 22px;
+
+            border: 1px solid var(--users-border);
+            border-radius: 15px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(16, 22, 45, .96),
+                rgba(11, 17, 37, .96)
+            );
+        }
+
+        .admin-users-page .summary-icon {
+            display: grid;
+            place-items: center;
+
+            width: 47px;
+            height: 47px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .18);
+            border-radius: 13px;
+
+            background: rgba(34, 211, 238, .07);
+
+            font-size: 21px;
+        }
+
+        .admin-users-page .summary-card:nth-child(2) .summary-icon {
+            border-color: rgba(59, 130, 246, .23);
+            background: rgba(59, 130, 246, .08);
+        }
+
+        .admin-users-page .summary-card:nth-child(3) .summary-icon {
+            border-color: rgba(139, 92, 246, .23);
+            background: rgba(139, 92, 246, .09);
+        }
+
+        .admin-users-page .summary-label {
+            display: block;
+            margin-bottom: 7px;
+
+            color: var(--users-muted);
+            font-size: 10px;
+        }
+
+        .admin-users-page .summary-value {
+            display: block;
+
+            color: var(--users-text);
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -.7px;
+        }
+
+        .admin-users-page .summary-caption {
+            display: block;
+            margin-top: 5px;
+
+            color: #7483A6;
+            font-size: 9px;
+        }
+
+        /* =========================================
+           USERS TABLE PANEL
+        ========================================= */
+
+        .admin-users-page .users-panel {
+            overflow: hidden;
+
+            border: 1px solid var(--users-border);
+            border-radius: 17px;
+
+            background: rgba(16, 22, 45, .80);
+
+            box-shadow: 0 18px 50px rgba(0, 0, 0, .13);
+        }
+
+        .admin-users-page .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 17px;
+
+            padding: 22px 24px;
+
+            border-bottom: 1px solid rgba(139, 92, 246, .17);
+        }
+
+        .admin-users-page .panel-title h2 {
+            margin: 0;
+
+            color: var(--users-text);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .admin-users-page .panel-title p {
+            margin: 7px 0 0;
+
+            color: var(--users-muted);
+            font-size: 10px;
+        }
+
+        .admin-users-page .table-tools {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .admin-users-page .user-count {
+            padding: 8px 10px;
+
+            border: 1px solid rgba(139, 92, 246, .20);
+            border-radius: 8px;
+
+            color: #C4B5FD;
+            background: rgba(139, 92, 246, .07);
+
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .admin-users-page .search-wrap {
+            position: relative;
+            width: min(250px, 100%);
+        }
+
+        .admin-users-page .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+
+            transform: translateY(-50%);
+
+            color: var(--users-muted);
+            font-size: 14px;
+
+            pointer-events: none;
+        }
+
+        .admin-users-page .search-input {
+            width: 100%;
+            min-height: 38px;
+            padding: 10px 12px 10px 34px;
+
+            outline: none;
+
+            border: 1px solid rgba(139, 92, 246, .20);
+            border-radius: 9px;
+
+            background: rgba(7, 11, 26, .45);
+
+            color: var(--users-text);
+            font-family: inherit;
+            font-size: 10px;
+
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .admin-users-page .search-input::placeholder {
+            color: #687695;
+        }
+
+        .admin-users-page .search-input:focus {
+            border-color: var(--users-cyan);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, .07);
+        }
+
+        /* =========================================
+           TABLE
+        ========================================= */
+
+        .admin-users-page .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .admin-users-page .users-table {
+            width: 100%;
+            min-width: 720px;
+
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .admin-users-page .users-table thead {
+            background: rgba(7, 11, 26, .48);
+        }
+
+        .admin-users-page .users-table th {
+            padding: 16px 23px;
+
+            border-bottom: 1px solid rgba(139, 92, 246, .15);
+
+            color: #8492B4;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .admin-users-page .users-table td {
+            padding: 17px 23px;
+
+            border-bottom: 1px solid rgba(139, 92, 246, .10);
+
+            color: #C8D3ED;
+            font-size: 11px;
+            vertical-align: middle;
+        }
+
+        .admin-users-page .users-table tbody tr {
+            transition: background .2s ease;
+        }
+
+        .admin-users-page .users-table tbody tr:hover {
+            background: rgba(34, 211, 238, .025);
+        }
+
+        .admin-users-page .users-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-users-page .user-id {
+            color: #8290B1;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .admin-users-page .user-identity {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-users-page .table-avatar {
+            display: grid;
+            place-items: center;
+
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+
+            border: 1px solid rgba(34, 211, 238, .15);
+            border-radius: 11px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(34, 211, 238, .10),
+                rgba(139, 92, 246, .13)
+            );
+
+            color: var(--users-cyan);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .admin-users-page .table-user-name {
+            color: var(--users-text);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .admin-users-page .table-user-label {
+            display: block;
+            margin-top: 4px;
+
+            color: #7483A6;
+            font-size: 9px;
+        }
+
+        .admin-users-page .user-email {
+            color: #A8B5D3;
+            overflow-wrap: anywhere;
+        }
+
+        /* =========================================
+           ACTION BUTTONS
+        ========================================= */
+
+        .admin-users-page .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .admin-users-page .edit-button,
+        .admin-users-page .delete-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            min-height: 33px;
+            padding: 8px 11px;
+
+            border-radius: 8px;
+
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
+
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .admin-users-page .edit-button {
+            border: 1px solid rgba(34, 211, 238, .19);
+            background: rgba(34, 211, 238, .06);
+
+            color: var(--users-cyan);
+        }
+
+        .admin-users-page .edit-button:hover {
+            border-color: var(--users-cyan);
+            background: rgba(34, 211, 238, .12);
+            transform: translateY(-1px);
+        }
+
+        .admin-users-page .delete-form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .admin-users-page .delete-button {
+            border: 1px solid rgba(251, 113, 133, .20);
+            background: rgba(251, 113, 133, .06);
+
+            color: #FDA4AF;
+        }
+
+        .admin-users-page .delete-button:hover {
+            border-color: rgba(251, 113, 133, .50);
+            background: rgba(251, 113, 133, .12);
+            transform: translateY(-1px);
+        }
+
+        /* =========================================
+           EMPTY STATE
+        ========================================= */
+
+        .admin-users-page .no-users {
+            padding: 55px 20px !important;
+            text-align: center;
+        }
+
+        .admin-users-page .empty-icon {
+            display: grid;
+            place-items: center;
+
+            width: 57px;
+            height: 57px;
+            margin: 0 auto 15px;
+
+            border: 1px solid rgba(139, 92, 246, .20);
+            border-radius: 17px;
+
+            background: rgba(139, 92, 246, .07);
+
+            font-size: 24px;
+        }
+
+        .admin-users-page .empty-title {
+            display: block;
+            margin-bottom: 8px;
+
+            color: var(--users-text);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .admin-users-page .empty-description {
+            color: var(--users-muted);
+            font-size: 10px;
+        }
+
+        .admin-users-page .no-search-results {
+            display: none;
+        }
+
+        /* =========================================
+           TABLE FOOTER
+        ========================================= */
+
+        .admin-users-page .panel-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            padding: 16px 23px;
+
+            border-top: 1px solid rgba(139, 92, 246, .14);
+            background: rgba(7, 11, 26, .22);
+
+            color: var(--users-muted);
+            font-size: 10px;
+        }
+
+        .admin-users-page .panel-footer strong {
+            color: #C4B5FD;
+        }
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .admin-users-page .admin-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+
+            padding: 22px 4%;
+
+            border-top: 1px solid rgba(139, 92, 246, .17);
+            background: rgba(7, 11, 26, .65);
+
+            color: var(--users-muted);
+            font-size: 10px;
+        }
+
+        .admin-users-page .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            color: var(--users-text);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .admin-users-page .footer-logo-mark {
+            display: grid;
+            place-items: center;
+
+            width: 29px;
+            height: 29px;
+
+            border-radius: 9px;
+
+            background: linear-gradient(
+                135deg,
+                var(--users-cyan),
+                var(--users-blue)
+            );
+
+            color: #07111E;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .admin-users-page .admin-footer p {
+            margin: 0;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1200px) {
+            .admin-users-page .admin-navbar {
+                flex-wrap: wrap;
+                gap: 13px;
+            }
+
+            .admin-users-page .admin-nav-links {
+                order: 3;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .admin-users-page .admin-nav-links a {
+                flex-shrink: 0;
+            }
+
+            .admin-users-page .admin-nav-user {
+                margin-left: auto;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .admin-users-page .users-container {
+                width: 94%;
+                padding-top: 28px;
+            }
+
+            .admin-users-page .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .admin-users-page .summary-card {
+                padding: 17px;
+            }
+
+            .admin-users-page .panel-header {
+                align-items: stretch;
+                flex-direction: column;
+                padding: 19px;
+            }
+
+            .admin-users-page .table-tools {
+                width: 100%;
+            }
+
+            .admin-users-page .search-wrap {
+                flex: 1;
+            }
+
+            .admin-users-page .page-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-users-page .admin-navbar {
+                padding: 13px 4%;
+            }
+
+            .admin-users-page .admin-nav-title,
+            .admin-users-page .admin-nav-divider,
+            .admin-users-page .admin-user-info {
+                display: none;
+            }
+
+            .admin-users-page .users-container {
+                width: 92%;
+            }
+
+            .admin-users-page .table-tools {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .admin-users-page .search-wrap {
+                width: 100%;
+            }
+
+            .admin-users-page .admin-footer {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-navbar.css') }}">
+</head>
+
+<body class="admin-users-page">
+
+    <!-- ADMIN NAVIGATION -->
+
+    {% include 'admin_navbar.html' %}
+
+    <!-- MAIN CONTENT -->
+
+    <main class="users-container">
+
+        <div class="page-breadcrumb">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <span>/</span>
+            <span>Users</span>
+        </div>
+
+        <!-- PAGE HEADING -->
+
+        <section class="page-heading">
+
+            <div>
+
+                <span class="heading-label">
+                    USER MANAGEMENT
+                </span>
+
+                <h1>
+                    Registered <span>Users</span>
+                </h1>
+
+                <p>
+                    View and manage customer accounts registered with CineBook.
+                </p>
+
+            </div>
+
+            <div class="heading-status">
+                <span class="status-dot"></span>
+                User directory
+            </div>
+
+        </section>
+
+        <!-- SUMMARY CARDS -->
+
+        <section class="summary-grid">
+
+            <article class="summary-card">
+
+                <div class="summary-icon">👥</div>
+
+                <div>
+                    <span class="summary-label">Total Registered Users</span>
+
+                    <strong class="summary-value" id="totalUsers">
+                        {{ users | length }}
+                    </strong>
+
+                    <span class="summary-caption">
+                        Accounts in the user directory
+                    </span>
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon">✉️</div>
+
+                <div>
+                    <span class="summary-label">Email Records</span>
+
+                    <strong class="summary-value" id="emailRecords">
+                        {{ users | length }}
+                    </strong>
+
+                    <span class="summary-caption">
+                        Registered email addresses
+                    </span>
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon">🔎</div>
+
+                <div>
+                    <span class="summary-label">Visible Results</span>
+
+                    <strong class="summary-value" id="visibleUsers">
+                        {{ users | length }}
+                    </strong>
+
+                    <span class="summary-caption">
+                        Users matching your search
+                    </span>
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- USERS TABLE -->
+
+        <section class="users-panel">
+
+            <div class="panel-header">
+
+                <div class="panel-title">
+
+                    <h2>Customer Directory</h2>
+
+                    <p>
+                        Review account details and manage registered users.
+                    </p>
+
+                </div>
+
+                <div class="table-tools">
+
+                    <span class="user-count">
+                        {{ users | length }} users
+                    </span>
+
+                    <div class="search-wrap">
+
+                        <span class="search-icon">⌕</span>
+
+                        <input
+                            type="search"
+                            id="userSearch"
+                            class="search-input"
+                            placeholder="Search name, email or ID..."
+                            aria-label="Search registered users"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="table-scroll">
+
+                <table class="users-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Email Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="usersTableBody">
+
+                        {% for user in users %}
+
+                        <tr class="user-row">
+
+                            <td>
+                                <span class="user-id">
+                                    #{{ user.user_id }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <div class="user-identity">
+
+                                    <div class="table-avatar">
+                                        {{ user.name[0] | upper if user.name else 'U' }}
+                                    </div>
+
+                                    <div>
+                                        <span class="table-user-name">
+                                            {{ user.name }}
+                                        </span>
+
+                                        <span class="table-user-label">
+                                            CineBook customer
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                <span class="user-email">
+                                    {{ user.email }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <div class="user-actions">
+
+                                    <a
+                                        href="{{ url_for('update_user', user_id=user.user_id) }}"
+                                        class="edit-button"
+                                    >
+                                        <span>✎</span>
+                                        Edit
+                                    </a>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('delete_user', user_id=user.user_id) }}"
+                                        class="delete-form"
+                                        onsubmit="return confirm('Are you sure you want to delete this user?');"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="delete-button"
+                                        >
+                                            <span>×</span>
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="4" class="no-users">
+
+                                <div class="empty-icon">👥</div>
+
+                                <span class="empty-title">
+                                    No users registered yet
+                                </span>
+
+                                <span class="empty-description">
+                                    Registered customer accounts will appear here.
+                                </span>
+
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                        <tr id="noSearchResults" class="no-search-results">
+                            <td colspan="4" class="no-users">
+
+                                <div class="empty-icon">🔎</div>
+
+                                <span class="empty-title">
+                                    No matching users
+                                </span>
+
+                                <span class="empty-description">
+                                    Try searching with another name, email or ID.
+                                </span>
+
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="panel-footer">
+
+                <span>
+                    Showing <strong id="footerVisibleUsers">{{ users | length }}</strong>
+                    of <strong>{{ users | length }}</strong> registered users
+                </span>
+
+                <span>
+                    CineBook · User Administration
+                </span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer class="admin-footer">
+
+        <div class="footer-brand">
+
+            <span class="footer-logo-mark">C</span>
+
+            CineBook
+
+        </div>
+
+        <p>Administrator Control Panel</p>
+
+        <span>© 2026 CineBook</span>
+
+    </footer>
+
+    <!-- SEARCH FUNCTIONALITY -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("userSearch");
+            const tableBody = document.getElementById("usersTableBody");
+            const rows = Array.from(
+                tableBody.querySelectorAll("tr.user-row")
+            );
+
+            const visibleUsers = document.getElementById("visibleUsers");
+            const footerVisibleUsers = document.getElementById("footerVisibleUsers");
+            const noSearchResults = document.getElementById("noSearchResults");
+
+            function filterUsers() {
+                const query = searchInput.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                rows.forEach(function (row) {
+                    const matches = row.textContent.toLowerCase().includes(query);
+
+                    row.style.display = matches ? "" : "none";
+
+                    if (matches) {
+                        visibleCount++;
+                    }
+                });
+
+                visibleUsers.textContent = visibleCount;
+                footerVisibleUsers.textContent = visibleCount;
+
+                noSearchResults.style.display =
+                    rows.length > 0 && visibleCount === 0 ? "table-row" : "none";
+            }
+
+            searchInput.addEventListener("input", filterUsers);
+        });
+    </script>
+
+</body>
+
+</html>

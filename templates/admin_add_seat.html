@@ -1,0 +1,157 @@
+
+{% extends "base.html" %}
+
+{% block title %}Add Seat | CineBook{% endblock %}
+
+{% block head %}
+<style>
+    .form-card {
+        max-width: 650px;
+        margin: 20px auto;
+        background: #10162D;
+        border: 1px solid #263454;
+        border-radius: 16px;
+        padding: 30px;
+    }
+
+    .form-card h1 {
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        color: #929FBE;
+        margin-bottom: 26px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 9px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 13px;
+        background: #070B1A;
+        border: 1px solid #344363;
+        border-radius: 8px;
+        color: #F1F5FF;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #22D3EE;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+    }
+
+    .save-btn {
+        border: none;
+        background: linear-gradient(135deg, #22D3EE, #3B82F6);
+        color: #070B1A;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .back-btn {
+        background: #202A45;
+        color: #F1F5FF;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1>Add New Seat</h1>
+    <p class="subtitle">
+        Enter the seat details and assign it to a screen.
+    </p>
+
+    {% if not screens %}
+        <p class="flash-message">
+            No screens are available. Add a screen before creating seats.
+        </p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('add_seat') }}">
+        <div class="form-group">
+            <label for="screen_id">Cinema Screen</label>
+
+            <select id="screen_id" name="screen_id" required>
+                <option value="">Select a screen</option>
+
+                {% for screen in screens %}
+                <option value="{{ screen.screen_id }}">
+                    {{ screen.screen_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="seat_number">Seat Number</label>
+            <input
+                type="text"
+                id="seat_number"
+                name="seat_number"
+                placeholder="Example: 1, 2, 10"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="row_label">Row Label</label>
+            <input
+                type="text"
+                id="row_label"
+                name="row_label"
+                placeholder="Example: A, B, C"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="seat_type">Seat Type</label>
+
+            <select id="seat_type" name="seat_type" required>
+                <option value="">Select seat type</option>
+                <option value="Standard">Standard</option>
+                <option value="Premium">Premium</option>
+                <option value="Recliner">Recliner</option>
+                <option value="VIP">VIP</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button
+                type="submit"
+                class="save-btn"
+                {% if not screens %}disabled{% endif %}
+            >
+                Save Seat
+            </button>
+
+            <a href="{{ url_for('admin_seats') }}" class="back-btn">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

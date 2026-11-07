@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Database Integrity | CineBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-navbar.css') }}">
+</head>
+<body>
+{% include 'admin_navbar.html' %}
+
+<main class="phase4-wrap">
+    <h1>Database Integrity Validation</h1>
+    <p class="phase4-muted">
+        Read-only checks for potential booking and payment inconsistencies.
+        A zero count means the check found no issues.
+    </p>
+
+    <div class="phase4-grid">
+        {% for check in checks %}
+        <section class="phase4-card">
+            <h2>{{ check.name }}</h2>
+            <p>{{ check.description }}</p>
+
+           <h1 class="integrity-count {% if check.count %}has-issues{% else %}no-issues{% endif %}">
+    {{ check.count }}
+</h1>
+
+            <p>
+                {% if check.count %}
+                    Potential issue(s) found
+                {% else %}
+                    No issues detected
+                {% endif %}
+            </p>
+        </section>
+        {% endfor %}
+    </div>
+</main>
+</body>
+</html>

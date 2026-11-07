@@ -1,0 +1,191 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Select Seats | CineBook</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-body">
+
+{% include 'customer_navbar.html' %}
+
+<main class="phase4-wrap">
+
+    <h1>Select Your Seats</h1>
+
+    <section class="phase4-card">
+
+        <h2>{{ show.title }}</h2>
+
+        <p>
+            {{ show.theatre_name }} · {{ show.screen_name }}
+        </p>
+
+        <p>
+            {{ show.show_date }} · {{ show.show_time }}
+        </p>
+
+        <p>
+            Price per seat:
+            ₹{{ '%.2f'|format(show.ticket_price|float) }}
+        </p>
+
+        <!-- Ticket price is stored in HTML, not JavaScript -->
+        <div id="seat-data"
+             data-price="{{ show.ticket_price }}">
+        </div>
+
+        <div class="screen-label">SCREEN</div>
+
+        <div class="phase4-legend">
+            <span>Available</span>
+            <span>Booked</span>
+            <span>Selected</span>
+        </div>
+
+        <form method="POST"
+              action="{{ url_for('checkout', show_id=show.show_id) }}"
+              id="seatForm">
+
+            <div class="phase4-seats">
+
+                {% for seat in seats %}
+
+                    {% set unavailable =
+                        seat.seat_id in booked_seat_ids %}
+
+                    <label class="phase4-seat {% if unavailable %}booked{% endif %}">
+
+                        <input
+                            type="checkbox"
+                            name="seat_ids"
+                            value="{{ seat.seat_id }}"
+                            {% if unavailable %}disabled{% endif %}
+                        >
+
+                        <strong>
+                            {{ seat.row_label }}{{ seat.seat_number }}
+                        </strong>
+
+                        <small>{{ seat.seat_type }}</small>
+
+                    </label>
+
+                {% endfor %}
+
+            </div>
+
+            {% if not seats %}
+                <p>No seats have been configured for this screen.</p>
+            {% endif %}
+
+            <div class="phase4-summary">
+
+                <p>
+                    Selected seats:
+                    <strong id="count">0</strong>
+                </p>
+
+                <p>
+                    Total:
+                    <strong id="total">₹0.00</strong>
+                </p>
+
+            </div>
+
+            <button
+                class="phase4-button"
+                type="submit"
+                id="checkoutButton"
+                {% if not seats %}disabled{% endif %}
+            >
+                Continue to Checkout
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const seatData = document.getElementById("seat-data");
+
+    const price = Number(seatData.dataset.price);
+
+    const checkboxes = document.querySelectorAll(
+        'input[name="seat_ids"]'
+    );
+
+    const countElement = document.getElementById("count");
+    const totalElement = document.getElementById("total");
+    const checkoutButton = document.getElementById("checkoutButton");
+    const seatForm = document.getElementById("seatForm");
+
+    function updateTotal() {
+
+        let count = 0;
+
+        checkboxes.forEach(function (box) {
+
+            const seat = box.closest(".phase4-seat");
+
+            if (box.checked) {
+
+                count++;
+
+                seat.classList.add("selected");
+
+            } else {
+
+                seat.classList.remove("selected");
+
+            }
+
+        });
+
+        countElement.textContent = count;
+
+        totalElement.textContent =
+            "₹" + (count * price).toFixed(2);
+
+        checkoutButton.disabled = count === 0;
+    }
+
+    checkboxes.forEach(function (box) {
+
+        box.addEventListener("change", updateTotal);
+
+    });
+
+    seatForm.addEventListener("submit", function (event) {
+
+        const selectedCount = document.querySelectorAll(
+            'input[name="seat_ids"]:checked'
+        ).length;
+
+        if (selectedCount === 0) {
+
+            event.preventDefault();
+
+            alert("Please select at least one seat.");
+
+        }
+
+    });
+
+    updateTotal();
+
+});
+</script>
+
+</body>
+</html>
+```

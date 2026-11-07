@@ -1,0 +1,33 @@
+<!-- Shared customer navbar: keep this identical across all customer pages. -->
+<header class="navbar">
+    <a href="{{ url_for('dashboard') }}" class="logo">
+        <span class="logo-mark">C</span>
+        <span class="logo-text">Cine<span>Book</span></span>
+    </a>
+
+    <nav class="nav-links" aria-label="Customer navigation">
+        <a href="{{ url_for('dashboard') }}"
+           class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a>
+        <a href="{{ url_for('dashboard') }}#movies">Movies</a>
+        <a href="{{ url_for('my_bookings') }}"
+           class="{% if request.endpoint == 'my_bookings' or request.endpoint == 'booking_confirmation' %}active{% endif %}">My Bookings</a>
+        <a href="{{ url_for('browse_movies') }}"
+           class="{% if request.endpoint == 'browse_movies' or request.endpoint == 'select_seats' or request.endpoint == 'checkout' or request.endpoint == 'process_simulated_payment' %}active{% endif %}">Browse Movies &amp; Book</a>
+        <a href="{{ url_for('dashboard') }}#profile">My Profile</a>
+    </nav>
+
+    <div class="user-area">
+        <div class="user-avatar">
+            {% if session.get('name') %}
+                {{ session.get('name')[0] | upper }}
+            {% else %}
+                U
+            {% endif %}
+        </div>
+        <div class="user-details">
+            <strong>{{ session.get('name') or 'Customer' }}</strong>
+            <small>Customer</small>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </div>
+</header>

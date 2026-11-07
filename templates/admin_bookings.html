@@ -1,0 +1,248 @@
+
+{% extends 'base.html' %}
+
+{% block title %}CineBook | Admin Bookings{% endblock %}
+
+{% block head %}
+<style>
+.admin-data-page {
+    width: min(1500px, 94%);
+    margin: 0 auto;
+    padding: 30px 0 60px;
+    color: #e8edf9;
+}
+.admin-data-hero {
+    padding: 28px 30px;
+    margin-bottom: 22px;
+    border: 1px solid rgba(34,211,238,.18);
+    border-radius: 20px;
+    background: linear-gradient(125deg,#111936,#0b1025);
+}
+.admin-data-hero h1 {
+    margin: 0 0 8px;
+    font-size: clamp(26px,3vw,36px);
+    color: #f1f5ff;
+}
+.admin-data-hero p {
+    margin: 0;
+    color: #aab5cf;
+    line-height: 1.6;
+}
+.admin-data-card {
+    overflow: hidden;
+    border: 1px solid rgba(139,92,246,.2);
+    border-radius: 16px;
+    background: #0d1328;
+}
+.admin-data-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #222943;
+}
+.admin-data-card-head h2 {
+    margin: 0;
+    font-size: 17px;
+}
+.admin-data-count {
+    color: #19d8ed;
+    font-size: 13px;
+    font-weight: 700;
+}
+.admin-table-wrap {
+    overflow-x: auto;
+}
+.admin-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 950px;
+}
+.admin-data-table th {
+    padding: 14px 16px;
+    text-align: left;
+    background: #101a33;
+    color: #aab5cf;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    white-space: nowrap;
+}
+.admin-data-table td {
+    padding: 15px 16px;
+    border-top: 1px solid #202741;
+    color: #e2e8f6;
+    font-size: 13px;
+    vertical-align: middle;
+}
+.admin-data-table tbody tr:hover {
+    background: rgba(34,211,238,.035);
+}
+.admin-muted {
+    color: #93a0bc !important;
+}
+.admin-status {
+    display: inline-block;
+    padding: 6px 9px;
+    border: 1px solid #315b69;
+    border-radius: 999px;
+    background: #102633;
+    color: #7ce8f5;
+    font-size: 11px;
+    font-weight: 700;
+}
+.admin-status.cancelled,
+.admin-status.failed {
+    border-color: #71364b;
+    background: #2a1723;
+    color: #ff9aaa;
+}
+.admin-status.pending {
+    border-color: #725a2f;
+    background: #2a2418;
+    color: #f5ce79;
+}
+.admin-inline-form {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 190px;
+}
+.admin-inline-form select {
+    min-width: 112px;
+    padding: 8px 9px;
+    border: 1px solid #303a59;
+    border-radius: 8px;
+    background: #090f21;
+    color: #e8edf9;
+}
+.admin-action-button {
+    padding: 8px 11px;
+    border: 1px solid #07536a;
+    border-radius: 8px;
+    background: #0b1b2a;
+    color: #16d9ef;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.admin-action-button:hover {
+    background: #103044;
+}
+.admin-empty {
+    padding: 38px 20px !important;
+    text-align: center;
+    color: #93a0bc !important;
+}
+@media(max-width:650px) {
+    .admin-data-hero {
+        padding: 22px;
+    }
+    .admin-data-card-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="admin-data-page">
+    <header class="admin-data-hero">
+        <h1>Bookings Management</h1>
+        <p>Review customer bookings, show details, booking totals, and update booking status.</p>
+    </header>
+
+    <section class="admin-data-card">
+        <div class="admin-data-card-head">
+            <h2>All Bookings</h2>
+            <span class="admin-data-count">
+                {{ bookings|length }} record{% if bookings|length != 1 %}s{% endif %}
+            </span>
+        </div>
+
+        <div class="admin-table-wrap">
+            <table class="admin-data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Movie</th>
+                        <th>Show</th>
+                        <th>Booked At</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>#{{ booking.booking_id }}</td>
+                        <td>{{ booking.user_name or ('User #' ~ booking.user_id) }}</td>
+                        <td class="admin-muted">{{ booking.user_email or '—' }}</td>
+                        <td>{{ booking.movie_title or 'Movie unavailable' }}</td>
+
+                        <td>
+                            {% if booking.show_date %}
+                                {{ booking.show_date }}
+                            {% else %}
+                                —
+                            {% endif %}
+
+                            {% if booking.show_time %}
+                                <br>
+                                <span class="admin-muted">{{ booking.show_time }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="admin-muted">
+                            {{ booking.booking_date or '—' }}
+                        </td>
+
+                        <td>₹{{ '%.2f'|format(booking.total_amount or 0) }}</td>
+
+                        <td>
+                            <span class="admin-status {{ (booking.status or 'pending')|lower|replace(' ', '-') }}">
+                                {{ booking.status or 'Pending' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <form class="admin-inline-form"
+                                  method="post"
+                                  action="{{ url_for('update_booking_status', booking_id=booking.booking_id) }}">
+
+                                <select name="status"
+                                        aria-label="Booking status for booking {{ booking.booking_id }}">
+                                    {% for status_option in ['Pending', 'Confirmed', 'Cancelled'] %}
+                                    <option value="{{ status_option }}"
+                                        {% if (booking.status or 'Pending')|lower == status_option|lower %}selected{% endif %}>
+                                        {{ status_option }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <button class="admin-action-button" type="submit">
+                                    Save
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td class="admin-empty" colspan="9">
+                            No bookings found yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+{% endblock %}

@@ -1,0 +1,133 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.screen-edit-page {
+    width: min(760px, calc(100% - 36px));
+    margin: 44px auto 70px;
+    color: #F1F5FF;
+}
+.screen-edit-panel {
+    padding: clamp(22px, 4vw, 38px);
+    border: 1px solid rgba(139,92,246,.26);
+    border-radius: 22px;
+    background: linear-gradient(145deg,#10162D,#0B1023);
+    box-shadow: 0 20px 55px rgba(0,0,0,.22);
+}
+.screen-edit-eyebrow {
+    color: #22D3EE;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.screen-edit-page h1 { margin: 9px 0; font-size: 32px; }
+.screen-edit-page p { color: #929FBE; font-size: 13px; }
+.screen-edit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 18px 0;
+}
+.screen-edit-field label {
+    color: #C9D3E9;
+    font-size: 12px;
+    font-weight: 700;
+}
+.screen-edit-field input,
+.screen-edit-field select {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px;
+    border: 1px solid rgba(148,163,216,.2);
+    border-radius: 11px;
+    color: #F1F5FF;
+    background: #090F22;
+}
+.screen-edit-field input:focus,
+.screen-edit-field select:focus {
+    outline: 2px solid rgba(34,211,238,.35);
+    border-color: #22D3EE;
+}
+.screen-edit-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 25px; }
+.screen-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+}
+.screen-edit-primary {
+    border: 0;
+    color: #06101D;
+    background: linear-gradient(110deg,#22D3EE,#3B82F6);
+}
+.screen-edit-secondary {
+    border: 1px solid rgba(148,163,216,.22);
+    color: #D9E2F7;
+    background: rgba(148,163,216,.06);
+}
+</style>
+
+<div class="screen-edit-page">
+    <section class="screen-edit-panel">
+        <span class="screen-edit-eyebrow">Admin Panel / Screens</span>
+        <h1>Edit Screen</h1>
+        <p>Update screen details and seating capacity.</p>
+
+        <form method="POST">
+            <div class="screen-edit-field">
+                <label for="theatre_id">Theatre *</label>
+                <select id="theatre_id" name="theatre_id" required>
+                    {% for theatre in theatres %}
+                    <option value="{{ theatre.theatre_id }}"
+                        {% if theatre.theatre_id == screen.theatre_id %}selected{% endif %}>
+                        {{ theatre.name }}{% if theatre.city %} — {{ theatre.city }}{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="screen-edit-field">
+                <label for="screen_name">Screen Name *</label>
+                <input id="screen_name" name="screen_name"
+                       maxlength="60" required value="{{ screen.screen_name }}">
+            </div>
+
+            <div class="screen-edit-field">
+                <label for="screen_type">Screen Type</label>
+                <select id="screen_type" name="screen_type">
+                    {% for item in ['Standard', 'IMAX', '4DX', 'Dolby Atmos', '3D', 'Premium'] %}
+                    <option value="{{ item }}"
+                        {% if screen.screen_type == item %}selected{% endif %}>
+                        {{ item }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="screen-edit-field">
+                <label for="total_seats">Total Seats *</label>
+                <input id="total_seats" name="total_seats"
+                       type="number" min="1" max="1000"
+                       required value="{{ screen.total_seats }}">
+            </div>
+
+            <div class="screen-edit-actions">
+                <button class="screen-edit-btn screen-edit-primary" type="submit">
+                    Save Changes →
+                </button>
+                <a class="screen-edit-btn screen-edit-secondary"
+                   href="{{ url_for('admin_screens') }}">Cancel</a>
+            </div>
+        </form>
+    </section>
+</div>
+
+{% endblock %}

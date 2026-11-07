@@ -1,0 +1,128 @@
+/* Canonical admin navbar shared by every admin page. Keep selectors namespaced. */
+html body .cinebook-admin-navbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10000 !important;
+    width: 100% !important;
+    min-height: 95px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 18px !important;
+    margin: 0 !important;
+    padding: 12px 2.3% !important;
+    background: #080b1a !important;
+    color: #e8edf9 !important;
+    border: 0 !important;
+    border-bottom: 1px solid #20243a !important;
+    font-family: Inter, Arial, sans-serif !important;
+    line-height: normal !important;
+}
+html body .cinebook-admin-navbar * { box-sizing: border-box !important; }
+html body .cinebook-admin-navbar .cinebook-admin-brand {
+    display: inline-flex !important; align-items: center !important; gap: 13px !important;
+    flex: 0 0 auto !important; margin: 0 !important; padding: 0 !important;
+    background: transparent !important; border: 0 !important; text-decoration: none !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-logo-mark {
+    width: 51px !important; height: 51px !important; flex: 0 0 51px !important;
+    display: grid !important; place-items: center !important; border-radius: 15px !important;
+    background: linear-gradient(135deg,#20d6eb,#368cf4) !important; color: #071426 !important;
+    font-size: 27px !important; font-weight: 800 !important; line-height: 1 !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-logo-text {
+    color: #19d8ed !important; font-size: 25px !important; font-weight: 800 !important;
+    letter-spacing: -.7px !important; white-space: nowrap !important; text-decoration: none !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-logo-text span { color: #19d8ed !important; }
+html body .cinebook-admin-navbar .cinebook-admin-links {
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    flex: 1 1 auto !important; gap: 5px !important; min-width: 0 !important;
+    width: auto !important; margin: 0 !important; padding: 0 !important;
+    overflow: visible !important; background: transparent !important; border: 0 !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-links a,
+html body .cinebook-admin-navbar .cinebook-admin-links a:last-child {
+    display: inline-flex !important; align-items: center !important; justify-content: center !important;
+    flex: 0 0 auto !important; margin: 0 !important; padding: 14px 13px !important;
+    border: 1px solid transparent !important; border-radius: 13px !important;
+    background: transparent !important; color: #aab5cf !important;
+    font-family: Inter, Arial, sans-serif !important; font-size: 14px !important;
+    font-weight: 600 !important; line-height: 1.2 !important; text-decoration: none !important;
+    white-space: nowrap !important; box-shadow: none !important;
+    transition: background .18s ease, color .18s ease, border-color .18s ease !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-links a:hover,
+html body .cinebook-admin-navbar .cinebook-admin-links a.active,
+html body .cinebook-admin-navbar .cinebook-admin-links a:last-child:hover,
+html body .cinebook-admin-navbar .cinebook-admin-links a:last-child.active {
+    color: #16d9ef !important; background: #0b1b2a !important; border-color: #07536a !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-account {
+    display: flex !important; align-items: center !important; gap: 17px !important;
+    flex: 0 0 auto !important; margin: 0 !important; padding: 0 !important;
+    background: transparent !important; border: 0 !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-account-info {
+    display: flex !important; flex-direction: column !important; gap: 5px !important;
+    margin: 0 !important; padding: 0 !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-account-info strong {
+    display: block !important; margin: 0 !important; padding: 0 !important;
+    color: #e8ebf5 !important; font-size: 14px !important; font-weight: 700 !important;
+    line-height: 1.25 !important; white-space: nowrap !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-account-info small {
+    display: block !important; margin: 0 !important; padding: 0 !important;
+    color: #94a1bd !important; font-size: 13px !important; line-height: 1.25 !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-logout {
+    display: inline-flex !important; align-items: center !important; justify-content: center !important;
+    flex: 0 0 auto !important; margin: 0 !important; padding: 13px 17px !important;
+    border: 1px solid #673044 !important; border-radius: 13px !important;
+    background: #171321 !important; color: #ff9aaa !important;
+    font-size: 14px !important; font-weight: 600 !important; line-height: 1.2 !important;
+    text-decoration: none !important; white-space: nowrap !important; box-shadow: none !important;
+}
+html body .cinebook-admin-navbar .cinebook-admin-logout:hover {
+    background: #291722 !important; color: #ff9aaa !important; border-color: #673044 !important;
+}
+
+@media (min-width: 651px) {
+    html body .cinebook-admin-navbar {
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+    }
+
+    html body .cinebook-admin-navbar .cinebook-admin-links {
+        order: 0 !important;
+        flex: 1 1 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        justify-content: center !important;
+        scrollbar-width: none;
+    }
+
+    html body .cinebook-admin-navbar .cinebook-admin-links::-webkit-scrollbar {
+        display: none;
+    }
+
+    html body .cinebook-admin-navbar .cinebook-admin-links a {
+        padding: 12px 9px !important;
+        font-size: 13px !important;
+    }
+
+}
+@media (max-width: 650px) {
+    html body .cinebook-admin-navbar { position: relative !important; padding: 12px 4% !important; }
+    html body .cinebook-admin-navbar .cinebook-admin-logo-mark { width: 42px !important; height: 42px !important; flex-basis: 42px !important; }
+    html body .cinebook-admin-navbar .cinebook-admin-logo-text { font-size: 21px !important; }
+    html body .cinebook-admin-navbar .cinebook-admin-account-info { display: none !important; }
+    html body .cinebook-admin-navbar .cinebook-admin-account { margin-left: auto !important; }
+    html body .cinebook-admin-navbar .cinebook-admin-links a,
+    html body .cinebook-admin-navbar .cinebook-admin-links a:last-child { padding: 10px 11px !important; font-size: 12px !important; }
+}

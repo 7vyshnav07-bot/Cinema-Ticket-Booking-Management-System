@@ -1,0 +1,220 @@
+
+{% extends "base.html" %}
+
+{% block title %}Schedule a Show | CineBook{% endblock %}
+
+{% block head %}
+<style>
+    .form-card {
+        max-width: 680px;
+        margin: 20px auto;
+        padding: 30px;
+        background: #10162D;
+        border: 1px solid #263454;
+        border-radius: 16px;
+    }
+
+    .form-card h1 {
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: #929FBE;
+        margin-bottom: 28px;
+    }
+
+    .form-group {
+        margin-bottom: 21px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 9px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 13px;
+        background: #070B1A;
+        color: #F1F5FF;
+        border: 1px solid #344363;
+        border-radius: 8px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #22D3EE;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .save-btn {
+        border: none;
+        background: linear-gradient(135deg, #22D3EE, #3B82F6);
+        color: #070B1A;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .back-btn {
+        background: #202A45;
+        color: #F1F5FF;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+    .notice {
+        padding: 14px;
+        margin-bottom: 20px;
+        background: #172C43;
+        border: 1px solid #22D3EE;
+        border-radius: 8px;
+        color: #F1F5FF;
+    }
+
+    @media (max-width: 520px) {
+        .form-card {
+            padding: 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1>Schedule a Show</h1>
+    <p class="subtitle">
+        Select a movie and screen, then configure the showtime.
+    </p>
+
+    {% if not movies %}
+    <div class="notice">
+        No movies are available. Add a movie before scheduling a show.
+    </div>
+    {% endif %}
+
+    {% if not screens %}
+    <div class="notice">
+        No screens are available. Add a screen before scheduling a show.
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('add_show') }}">
+        <div class="form-group">
+            <label for="movie_id">Movie</label>
+
+            <select id="movie_id" name="movie_id" required>
+                <option value="">Select a movie</option>
+                {% for movie in movies %}
+                <option value="{{ movie.movie_id }}">
+                    {{ movie.title }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="screen_id">Cinema Screen</label>
+
+            <select id="screen_id" name="screen_id" required>
+                <option value="">Select a screen</option>
+                {% for screen in screens %}
+                <option value="{{ screen.screen_id }}">
+                    {{ screen.screen_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="show_date">Show Date</label>
+                <input
+                    type="date"
+                    id="show_date"
+                    name="show_date"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="show_time">Show Time</label>
+                <input
+                    type="time"
+                    id="show_time"
+                    name="show_time"
+                    required
+                >
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="ticket_price">Ticket Price (₹)</label>
+            <input
+                type="number"
+                id="ticket_price"
+                name="ticket_price"
+                min="1"
+                step="0.01"
+                placeholder="Example: 180.00"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="status">Show Status</label>
+            <select id="status" name="status" required>
+                <option value="Active">Active</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+
+        <div class="actions">
+            <button
+                type="submit"
+                class="save-btn"
+                {% if not movies or not screens %}disabled{% endif %}
+            >
+                Save Show
+            </button>
+
+            <a href="{{ url_for('admin_shows') }}" class="back-btn">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+const dateInput = document.getElementById("show_date");
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+
+dateInput.min = `${year}-${month}-${day}`;
+</script>
+{% endblock %}

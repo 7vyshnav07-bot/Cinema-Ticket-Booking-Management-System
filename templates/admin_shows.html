@@ -1,0 +1,345 @@
+
+{% extends "base.html" %}
+
+{% block title %}Manage Shows | CineBook{% endblock %}
+
+{% block head %}
+<style>
+    .shows-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .shows-header h1 {
+        font-size: 30px;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: #929FBE;
+        font-size: 14px;
+    }
+
+    .primary-btn {
+        display: inline-block;
+        padding: 12px 18px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #22D3EE, #3B82F6);
+        color: #070B1A;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 18px;
+        margin-bottom: 26px;
+    }
+
+    .stat-card {
+        background: #10162D;
+        border: 1px solid #263454;
+        border-radius: 14px;
+        padding: 22px;
+    }
+
+    .stat-card p {
+        color: #929FBE;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .stat-card h2 {
+        color: #22D3EE;
+        font-size: 28px;
+        margin: 0;
+    }
+
+    .shows-card {
+        background: #10162D;
+        border: 1px solid #263454;
+        border-radius: 14px;
+        padding: 22px;
+        overflow-x: auto;
+    }
+
+    .table-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .table-heading h2 {
+        font-size: 20px;
+        margin: 0;
+    }
+
+    .search-box {
+        width: 270px;
+        max-width: 100%;
+        padding: 11px 14px;
+        background: #070B1A;
+        color: #F1F5FF;
+        border: 1px solid #344363;
+        border-radius: 8px;
+    }
+
+    .search-box:focus {
+        outline: none;
+        border-color: #22D3EE;
+    }
+
+    .shows-table {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+    }
+
+    .shows-table th {
+        padding: 15px 12px;
+        text-align: left;
+        color: #929FBE;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        border-bottom: 1px solid #263454;
+    }
+
+    .shows-table td {
+        padding: 16px 12px;
+        border-bottom: 1px solid #202A45;
+        font-size: 14px;
+    }
+
+    .shows-table tbody tr:hover {
+        background: #151D38;
+    }
+
+    .movie-title {
+        font-weight: bold;
+        color: #F1F5FF;
+    }
+
+    .show-id {
+        color: #929FBE;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        background: #15372F;
+        color: #6EE7B7;
+    }
+
+    .status.inactive,
+    .status.cancelled {
+        background: #351522;
+        color: #FDA4AF;
+    }
+
+    .status.pending {
+        background: #3B2E17;
+        color: #FCD34D;
+    }
+
+    .delete-btn {
+        background: #351522;
+        border: 1px solid #7F1D35;
+        color: #FDA4AF;
+        border-radius: 7px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .delete-btn:hover {
+        background: #571B30;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 45px 15px;
+        color: #929FBE;
+    }
+
+    .empty-state h3 {
+        color: #F1F5FF;
+        margin: 12px 0 8px;
+    }
+
+    @media (max-width: 600px) {
+        .shows-header h1 {
+            font-size: 24px;
+        }
+
+        .shows-card {
+            padding: 14px;
+        }
+
+        .search-box {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="shows-header">
+    <div>
+        <h1>Manage Shows</h1>
+        <p class="subtitle">
+            Schedule movies, manage showtimes and set ticket prices.
+        </p>
+    </div>
+
+    <a href="{{ url_for('add_show') }}" class="primary-btn">
+        + Schedule a Show
+    </a>
+</section>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <p>Total Shows</p>
+        <h2>{{ shows|length }}</h2>
+    </div>
+
+    <div class="stat-card">
+        <p>Active Shows</p>
+        <h2>
+            {{ shows|selectattr('status', 'equalto', 'Active')|list|length }}
+        </h2>
+    </div>
+
+    <div class="stat-card">
+        <p>Movies Scheduled</p>
+        <h2>{{ shows|map(attribute='movie_id')|unique|list|length }}</h2>
+    </div>
+</section>
+
+<section class="shows-card">
+    <div class="table-heading">
+        <h2>Show Schedule</h2>
+
+        <input
+            type="text"
+            id="showSearch"
+            class="search-box"
+            placeholder="Search movies, screens, theatres..."
+            oninput="filterShows()"
+        >
+    </div>
+
+    {% if shows %}
+    <table class="shows-table" id="showsTable">
+        <thead>
+            <tr>
+                <th>Show ID</th>
+                <th>Movie</th>
+                <th>Theatre</th>
+                <th>Screen</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Ticket Price</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for show in shows %}
+            <tr>
+                <td class="show-id">#{{ show.show_id }}</td>
+
+                <td class="movie-title">
+                    {{ show.movie_title }}
+                </td>
+
+                <td>{{ show.theatre_name }}</td>
+
+                <td>{{ show.screen_name }}</td>
+
+                <td>{{ show.show_date }}</td>
+
+                <td>{{ show.show_time }}</td>
+
+                <td>₹{{ show.ticket_price }}</td>
+
+                <td>
+                    {% set status_value = (show.status or 'Active')|lower %}
+                    <span class="status
+                        {% if status_value != 'active' %}
+                            {% if status_value == 'cancelled' %}
+                                cancelled
+                            {% else %}
+                                inactive
+                            {% endif %}
+                        {% endif %}">
+                        {{ show.status or 'Active' }}
+                    </span>
+                </td>
+
+                <td>
+                    <form
+                        method="POST"
+                        action="{{ url_for('delete_show', show_id=show.show_id) }}"
+                        onsubmit="return confirm('Delete this show? This action cannot be undone.');"
+                    >
+                        <button type="submit" class="delete-btn">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="noResults" class="empty-state" style="display:none">
+        No matching shows found.
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <div style="font-size:40px;">▣</div>
+        <h3>No shows scheduled</h3>
+        <p>Schedule your first movie show to see it listed here.</p>
+    </div>
+    {% endif %}
+</section>
+
+<script>
+function filterShows() {
+    const query = document
+        .getElementById("showSearch")
+        .value.toLowerCase();
+
+    const rows = document.querySelectorAll("#showsTable tbody tr");
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        const matches = row.innerText.toLowerCase().includes(query);
+        row.style.display = matches ? "" : "none";
+
+        if (matches) visibleCount++;
+    });
+
+    const noResults = document.getElementById("noResults");
+
+    if (noResults) {
+        noResults.style.display =
+            visibleCount === 0 ? "block" : "none";
+    }
+}
+</script>
+
+{% endblock %}

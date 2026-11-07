@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout | CineBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
+{% include 'customer_navbar.html' %}
+
+<main class="phase4-wrap">
+    <h1>Review Your Booking</h1>
+
+    <div class="phase4-grid">
+        <section class="phase4-card">
+            <h2>{{ show.title }}</h2>
+            <p>{{ show.theatre_name }} · {{ show.screen_name }}</p>
+            <p>{{ show.show_date }} · {{ show.show_time }}</p>
+
+            <h3>Selected seats</h3>
+            <p>
+                {% for seat in seats %}
+                    {{ seat.row_label }}{{ seat.seat_number }}
+                    {% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+
+            <div class="phase4-summary">
+                <p>Number of seats: {{ seats|length }}</p>
+                <h2>Total: ₹{{ '%.2f'|format(total|float) }}</h2>
+            </div>
+        </section>
+
+        <section class="phase4-card">
+            <h2>Demo Payment</h2>
+            <p>
+                This is a simulated payment for an academic project.
+                No real money is charged. Never enter a real card number,
+                UPI PIN, or banking password.
+            </p>
+
+            <form class="phase4-form" method="POST"
+                  action="{{ url_for('process_simulated_payment', show_id=show.show_id) }}">
+
+                {% for seat_id in seat_ids %}
+                    <input type="hidden" name="seat_ids" value="{{ seat_id }}">
+                {% endfor %}
+
+                <label>Payment method
+                    <select name="payment_method" required>
+                        <option value="UPI (Demo)">UPI (Demo)</option>
+                        <option value="Card (Demo)">Card (Demo)</option>
+                        <option value="Pay at Counter">Pay at Counter</option>
+                    </select>
+                </label>
+
+                <label>Test result
+                    <select name="simulated_result" required>
+                        <option value="success">Simulate success</option>
+                        <option value="fail">Simulate failure (test rollback)</option>
+                    </select>
+                </label>
+
+                <button class="phase4-button" type="submit">
+                    Confirm Booking
+                </button>
+
+                <a class="phase4-button secondary"
+                   href="{{ url_for('select_seats', show_id=show.show_id) }}">
+                    Back to Seats
+                </a>
+            </form>
+        </section>
+    </div>
+</main>
+</body>
+</html>
